@@ -1,10 +1,13 @@
 import React from 'react'
-
+import Leftside from './leftside';
+import Rightside from './Rightside';
 const Login = () => {
   return (
-    <div>
-      
+       <div className="h-screen w-screen flex overflow-hidden mainscreen">
+      <Leftside/>
+      <Rightside/>
     </div>
+   
   )
 }
 
