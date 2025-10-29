@@ -15,7 +15,7 @@
 .mainscreen {
  background: 
     linear-gradient(rgba(0, 0, 0, 0.575), rgba(0, 0, 0, 0.606)), /* black overlay */
-    url('../public/pexels.jpg') center/cover no-repeat;
+    url('./pexels.jpg') center/cover no-repeat;
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
