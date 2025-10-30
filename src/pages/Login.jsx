@@ -141,7 +141,7 @@ const Login = () => {
                 Log In
               </button>
               <Link
-                to="/register"
+                to="/signup"
                 className="text-gray-400 hover:text-red-500 font-medium transition-colors duration-300"
               >
                 Create an account?

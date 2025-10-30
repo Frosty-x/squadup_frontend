@@ -3,7 +3,7 @@ import api from "./api";
 const authService = { // ✅ Fixed typo from "authSevice"
     register: async (userData) => {
         try {
-            const response = await api.post('/auth/register', userData);
+            const response = await api.post('/auth/signup', userData);
             localStorage.setItem('token', response.data.data.token);
             return response.data;
         } catch (error) {
