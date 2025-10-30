@@ -2,13 +2,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 
-const Login = () => {
-  const { login } = useContext(AuthContext);
-
+const Signup = () => {
+  const { register } = useContext(AuthContext);
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const socialIcons = ["in", "f", "@", "X", "G+"];
@@ -18,16 +18,22 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
     try {
-      await login({ email, password });
+      await register({ name, email, password });
       navigate("/events");
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
+      setError(err.response?.data?.message || "Signup failed");
     }
   };
 
   return (
-    <div className="h-screen w-screen flex overflow-hidden mainscreen text-gray-200">
+    <div className="min-h-screen w-screen flex overflow-y-hidden mainscreen text-gray-200">
       {/* LEFT SIDE */}
       <div className="w-1/2 p-16 flex flex-col justify-between">
         {/* Logo */}
@@ -41,13 +47,13 @@ const Login = () => {
         </div>
 
         {/* CTA Section */}
-        <div className="opacity-0 animate-slide-up [animation-delay:0.4s] [animation-fill-mode:forwards]">
+        <div className="opacity-0 animate-slide-up [animation-delay:0.6s] [animation-fill-mode:forwards]">
           <h2 className="text-5xl font-bold mb-6 leading-tight text-gray-200">
-            Don't have an <br /> account?
+            Already have an <br /> account?
           </h2>
 
           <p className="text-gray-400 text-lg mb-10 leading-relaxed badscript">
-            Create your account and start finding players to match your energy.
+            Log in and join the squad to connect with players near you.
           </p>
 
           <div className="flex space-x-4">
@@ -67,19 +73,35 @@ const Login = () => {
         </div>
       </div>
 
-      {/* RIGHT SIDE - Login Form */}
-      <div className="flex items-center justify-between p-12 w-1/2">
-        <div className="w-[900px] h-[540px]  rounded-3xl p-10 backdrop-blur-sm bg-black/10 border border-white/30 shadow-2xl opacity-0 animate-scale-in [animation-delay:0.3s] [animation-fill-mode:forwards]">
-          <h2 className="text-4xl font-bold text-gray-100 mb-8">Log In</h2>
+      {/* RIGHT SIDE - Signup Form */}
+      <div className="flex items-center justify-center p-16 w-1/2">
+        <div className="w-[900px] max-h-[650px] overflow-y-auto rounded-3xl p-10 backdrop-blur-sm bg-black/10 border border-white/30 shadow-2xl opacity-0 animate-scale-in [animation-delay:0.5s] [animation-fill-mode:forwards]">
+          <h2 className="text-4xl font-bold text-gray-100 mb-8">Sign Up</h2>
+
+          {/* Error Message */}
           {error && (
-            <div className="bg-red-100 text-red-700 p-3 rounded mb-4">
+            <div className="bg-red-900/40 border border-red-600 text-red-300 p-3 rounded-lg mb-6 text-sm animate-fade-in transition-all duration-300">
               {error}
             </div>
           )}
 
           <form className="space-y-6" onSubmit={handleSubmit}>
+            {/* Name Field */}
+            <div className="opacity-0 animate-slide-right [animation-delay:0.6s] [animation-fill-mode:forwards]">
+              <label className="block text-gray-100 text-sm mb-2 font-medium">
+                Full Name
+              </label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className={inputClasses}
+                required
+              />
+            </div>
+
             {/* Email Field */}
-            <div className="opacity-0 animate-slide-right [animation-delay:0.5s] [animation-fill-mode:forwards]">
+            <div className="opacity-0 animate-slide-right [animation-delay:0.7s] [animation-fill-mode:forwards]">
               <label className="block text-gray-100 text-sm mb-2 font-medium">
                 Email
               </label>
@@ -93,39 +115,32 @@ const Login = () => {
             </div>
 
             {/* Password Field */}
-            <div className="opacity-0 animate-slide-right [animation-delay:0.6s] [animation-fill-mode:forwards]">
+            <div className="opacity-0 animate-slide-right [animation-delay:0.9s] [animation-fill-mode:forwards]">
               <label className="block text-gray-100 text-sm mb-2 font-medium">
                 Password
               </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className={inputClasses}
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-600 transition-all duration-300 hover:scale-110"
-                  aria-label="Toggle password visibility"
-                ></button>
-              </div>
+              <input
+                type="text"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className={inputClasses}
+                required
+              />
             </div>
 
             {/* Terms Checkbox */}
-            <div className="flex items-start opacity-0 animate-fade-in [animation-delay:0.7s] [animation-fill-mode:forwards]">
+            <div className="flex items-start opacity-0 animate-fade-in [animation-delay:0.9s] [animation-fill-mode:forwards]">
               <input
                 type="checkbox"
                 id="terms"
                 className="mt-1 mr-3 w-4 h-4 accent-red-600 cursor-pointer"
+                required
               />
               <label
                 htmlFor="terms"
                 className="text-gray-400 text-sm leading-relaxed"
               >
-                I agree to the
+                I agree to the{" "}
                 <a className="text-red-800 underline hover:text-red-400 transition-colors duration-300">
                   Terms of Service
                 </a>
@@ -133,18 +148,18 @@ const Login = () => {
             </div>
 
             {/* Submit Button */}
-            <div className="flex items-center space-x-4 pt-4 opacity-0 animate-slide-up [animation-delay:0.8s] [animation-fill-mode:forwards]">
+            <div className="flex items-center space-x-4 pt-4 opacity-0 animate-slide-up [animation-delay:1s] [animation-fill-mode:forwards]">
               <button
                 type="submit"
                 className="px-8 py-3 rounded-lg text-white font-semibold bg-transparent border border-red-800 hover:bg-red-800 hover:scale-105 transition-all duration-300"
               >
-                Log In
+                Create Account
               </button>
               <Link
-                to="/register"
+                to="/login"
                 className="text-gray-400 hover:text-red-500 font-medium transition-colors duration-300"
               >
-                Create an account?
+                Already have an account?
               </Link>
             </div>
           </form>
@@ -154,4 +169,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Signup;
