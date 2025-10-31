@@ -32,7 +32,7 @@ export default function HeroSection() {
         <div className="hidden md:flex justify-center items-center relative translate-y-[50px]">
           <div className="absolute inset-0 animate-fadeInUp delay-200 bg-transparent rounded-full scale-110"></div>
 
-          <div className="relative w-[30rem] h-[40rem] rounded-2xl animate-fadeInUp delay-200 border-5 border-white flex items-center justify-center bg-transparent ">
+          <div className="relative w-[30rem] h-[40rem] rounded-2xl animate-fadeInUp delay-200 border-3 border-white flex items-center justify-center bg-transparent ">
             <img
               className="scale-237"
               src="/bg5.png"
