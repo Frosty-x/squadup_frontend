@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }) => {
             if (token) {
                 try {
                     const response = await authService.getCurrentUser();
-                    setUser(response.data); // ✅ Adjust based on your API response structure
+                    setUser(response.data); 
                 } catch (error) {
                     console.error('Failed to get user:', error);
                     localStorage.removeItem('token');
@@ -29,20 +29,20 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
         try {
             const response = await authService.register(userData);
-            setUser(response.data.user); // ✅ Fixed to access user object
+            setUser(response.data.user);
         } catch (error) {
             console.error('Registration failed:', error);
-            throw error; // ✅ Re-throw for component handling
+            throw error; 
         }
     }
 
     const login = async (credentials) => {
         try {
             const response = await authService.login(credentials);
-            setUser(response.data.user); // ✅ Fixed to access user object
+            setUser(response.data.user); 
         } catch (error) {
             console.error('Login failed:', error);
-            throw error; // ✅ Re-throw for component handling
+            throw error; 
         }
     };
 

@@ -1,6 +1,6 @@
 import api from "./api";
 
-const authService = { // ✅ Fixed typo from "authSevice"
+const authService = {
     register: async (userData) => {
         try {
             const response = await api.post('/auth/signup', userData);

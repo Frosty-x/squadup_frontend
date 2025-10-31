@@ -23,13 +23,13 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-black/70 backdrop-blur-xl border-b border-neutral-800/50">
+    <nav className="fixed top-0 left-0 right-0 z-50  backdrop-blur-xl border-b border-neutral-800/50">
       <div className="max-w-7xl mx-auto flex items-center justify-between py-4 px-6">
         
         {/* Logo */}
         <div className="flex items-center space-x-3">
           <div className="w-5 h-5 border-2 border-red-700 rotate-45"></div>
-          <span className="text-2xl font-bold tracking-wider text-white font-sans">
+          <span className="text-2xl badscript tracking-wider text-white font-sans">
             SquadUp
           </span>
         </div>
