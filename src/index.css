@@ -11,14 +11,26 @@
 }
 .orbital{
    font-family: "Orbitron", sans-serif;
+   font-weight: 800;
+   font-style: normal;
+  
 }
+ .landingmain{
+    background: 
+    linear-gradient(rgba(0, 0, 0, 0.575), rgba(0, 0, 0, 0.606)), 
+    url('../public/bgred.jpg') center/cover no-repeat;
+
+   background-repeat: no-repeat;
+   background-position: center;
+   background-size: cover;
+   }
 .mainscreen {
  background: 
-    linear-gradient(rgba(0, 0, 0, 0.575), rgba(0, 0, 0, 0.606)), /* black overlay */
+    linear-gradient(rgba(0, 0, 0, 0.575), rgba(0, 0, 0, 0.606)), 
     url('./pexels.jpg') center/cover no-repeat;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
+   background-repeat: no-repeat;
+   background-position: center;
+   background-size: cover;
 }
 
 @keyframes fade-in {
@@ -94,3 +106,24 @@
   animation: scale-in 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
+@keyframes fadeInUp {
+     0% { opacity: 0; transform: translateY(40px); }
+     100% { opacity: 1; transform: translateY(0); }
+   }
+   @keyframes slideInLeft {
+     0% { opacity: 0; transform: translateX(-50px); }
+     100% { opacity: 1; transform: translateX(0); }
+   }
+   @keyframes slideInRight {
+     0% { opacity: 0; transform: translateX(50px); }
+     100% { opacity: 1; transform: translateX(0); }
+   }
+   .animate-fadeInUp {
+     animation: fadeInUp 1s ease-out both;
+   }
+   .animate-slideInLeft {
+     animation: slideInLeft 1s ease-out both;
+   }
+   .animate-slideInRight {
+     animation: slideInRight 1s ease-out both;
+   }
