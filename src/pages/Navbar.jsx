@@ -1,19 +1,25 @@
 import React from "react";
-import { useNavigate } from "react-router-dom"; // Import navigation hook
+import { useNavigate, useLocation } from "react-router-dom";
 
 // Navigation items
 const NAV_ITEMS = [
-  { name: "HOME", href: "#home" },
-  { name: "GAMES", href: "#games" },
-  { name: "PLAYERS", href: "#players" },
+  { name: "HOME", href: "/" },
+  { name: "GAMES", href: "/games" },
+  { name: "PLAYERS", href: "/players" },
 ];
 
 export default function Navbar() {
-  const navigate = useNavigate(); // Hook for page navigation
+  const navigate = useNavigate();
+  const location = useLocation(); 
 
   // Navigate to signup page on click
   const handleSignUp = () => {
     navigate("/signup");
+  };
+
+  // Handle navigation
+  const handleNavClick = (href) => {
+    navigate(href);
   };
 
   return (
@@ -30,16 +36,30 @@ export default function Navbar() {
 
         {/* Navigation Links */}
         <div className="hidden md:flex items-center gap-10">
-          {NAV_ITEMS.map(({ name, href }) => (
-            <a
-              key={name}
-              href={href}
-              className="relative text-gray-400 text-sm font-semibold tracking-wide group hover:text-white transition-colors duration-300"
-            >
-              {name}
-              <span className="absolute left-0 -bottom-1.5 w-0 h-0.5 bg-red-600 transition-all duration-300 group-hover:w-full"></span>
-            </a>
-          ))}
+          {NAV_ITEMS.map(({ name, href }) => {
+            const isActive = location.pathname === href;
+            
+            return (
+              <button
+                key={name}
+                onClick={() => handleNavClick(href)}
+                className={`relative text-sm font-semibold tracking-wide group transition-colors duration-300 ${
+                  isActive 
+                    ? "text-white" 
+                    : "text-gray-400 hover:text-white"
+                }`}
+              >
+                {name}
+                <span 
+                  className={`absolute left-0 -bottom-1.5 h-0.5 bg-red-600 transition-all duration-300 ${
+                    isActive 
+                      ? "w-full" 
+                      : "w-0 group-hover:w-full"
+                  }`}
+                ></span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Sign Up Button */}

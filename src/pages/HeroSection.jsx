@@ -7,7 +7,7 @@ export default function HeroSection() {
       <div className="max-w-7xl w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
         {/* Left Content */}
         <div className="space-y-6 max-w-xl animate-slideInLeft">
-          <h1 className="text-5xl lg:text-6xl font-black leading-[1.1] tracking-tight">
+          <h1 className="text-5xl lg:text-6xl font-black leading-normal tracking-tight">
             <span className="block text-white mb-2">UNLOCK YOUR</span>
             <span className="block text-red-600">INNER ATHLETE!</span>
           </h1>
