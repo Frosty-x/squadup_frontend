@@ -25,9 +25,14 @@ export default function Navbar() {
    ? [
       {name:"HOME", href:"/"},
       {name:"GAMES", href:"/games"},
-      {name:"PLAYERS", href:"/players"}
+      {name:"PLAYERS", href:"/players"},
+      {name:"ABOUT",href:"/about"}
    ]
-   : [{name:"HOME", href:"/"}]
+   : [{name:"HOME", href:"/"},
+     {name:"GAMES", href:"/games"},
+      {name:"PLAYERS", href:"/players"},
+       {name:"ABOUT",href:"/about"}
+   ]
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50  backdrop-blur-xl border-b border-neutral-800/50">
