@@ -1,16 +1,13 @@
 import React from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-
-// Navigation items
-const NAV_ITEMS = [
-  { name: "HOME", href: "/" },
-  { name: "GAMES", href: "/games" },
-  { name: "PLAYERS", href: "/players" },
-];
+import { useNavigate, useLocation, href } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
+import { useContext } from "react";
+import Blank from "../components/Blank";
 
 export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation(); 
+  const {user, loading} = useContext(AuthContext)
 
   // Navigate to signup page on click
   const handleSignUp = () => {
@@ -21,6 +18,16 @@ export default function Navbar() {
   const handleNavClick = (href) => {
     navigate(href);
   };
+
+  if(loading) return null
+
+  const NAV_ITEMS = user
+   ? [
+      {name:"HOME", href:"/"},
+      {name:"GAMES", href:"/games"},
+      {name:"PLAYERS", href:"/players"}
+   ]
+   : [{name:"HOME", href:"/"}]
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50  backdrop-blur-xl border-b border-neutral-800/50">
@@ -67,7 +74,7 @@ export default function Navbar() {
           onClick={handleSignUp}
           className="bg-red-700 hover:bg-red-800 text-white text-sm font-bold px-8 py-2.5 rounded-full shadow-lg hover:shadow-red-900/50 transition-all duration-300 hover:scale-105"
         >
-          SIGN UP
+          {user ? "Sign Up" : "Login"}
         </button>
       </div>
     </nav>
