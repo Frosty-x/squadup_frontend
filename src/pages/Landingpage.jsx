@@ -9,13 +9,7 @@ export default function LandingPage() {
   // const {user, loading} = useContext(AuthContext)
   return (
     <div className="relative h-screen landingmain text-white overflow-hidden flex flex-col">
-      {/* Gradient Overlay */}
-
-      {/* Navbar */}
-      {/* {user ? <Navbar/> : <Blank/> } */}
       <Navbar />
-
-      {/* Hero Section */}
       <HeroSection />
 
       
