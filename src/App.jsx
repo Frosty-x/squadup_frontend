@@ -1,20 +1,31 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Login from './pages/Login';
-import SignUp from './pages/Signup';
-import { AuthProvider } from './context/AuthContext';
-import Navbar from './pages/Navbar';
-import LandingPage from './pages/Landingpage';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import HomePage from './pages/HomePage';
+import SignUpPage from './pages/SignUpPage';
+import SignInPage from './pages/SignInPage';
+import Dashboard from './pages/Dashboard';
+import OnboardingLayout from './components/onboarding/OnboardingLayout';
 
-const App = () => {
+function App() {
   return (
-    <AuthProvider>
-        <Routes>
-          <Route path='/login' element={<Login />} />
-          <Route path='/signup' element={<SignUp />} />
-          <Route path='/' element={<LandingPage/>}/>
-        </Routes>
-    </AuthProvider>
-  )
+    <Routes>
+      {/* Public Routes */}
+      <Route path="/" element={<HomePage />} />
+      <Route path="/signup" element={<SignUpPage />} />
+      <Route path="/signin" element={<SignInPage />} />
+      
+      {/* Onboarding Routes */}
+      <Route path="/onboarding/*" element={<OnboardingLayout />} />
+      
+      {/* Dashboard */}
+      <Route path="/dashboard" element={<Dashboard />} />
+      
+      {/* TEST ROUTE - Remove this later */}
+      <Route path="/test-onboarding" element={<Navigate to="/onboarding/step1" replace />} />
+      
+      {/* Catch all - redirect to home */}
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  );
 }
 
-export default App
+export default App;
