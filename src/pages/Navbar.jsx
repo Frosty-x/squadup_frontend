@@ -1,50 +1,49 @@
-import React from "react";
-import { useNavigate, useLocation, href } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { useContext } from "react";
-import Blank from "../components/Blank";
 
 export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation(); 
-  const {user, loading} = useContext(AuthContext)
+  const { user, loading } = useContext(AuthContext);
 
-  // Navigate to signup page on click
-  const handleSignUp = () => {
-    navigate("/signup");
-  };
+  if (loading) return null;
+
+  const NAV_ITEMS = [
+    { name: "HOME", href: "/" },
+    { name: "GAMES", href: "/games" },
+    { name: "PLAYERS", href: "/players" },
+    { name: "ABOUT", href: "/about" }
+  ];
 
   // Handle navigation
   const handleNavClick = (href) => {
     navigate(href);
   };
 
-  if(loading) return null
-
-  const NAV_ITEMS = user
-   ? [
-      {name:"HOME", href:"/"},
-      {name:"GAMES", href:"/games"},
-      {name:"PLAYERS", href:"/players"},
-      {name:"ABOUT",href:"/about"}
-   ]
-   : [{name:"HOME", href:"/"},
-     {name:"GAMES", href:"/games"},
-      {name:"PLAYERS", href:"/players"},
-       {name:"ABOUT",href:"/about"}
-   ]
+  // Handle Auth Button Click
+  const handleAuthClick = () => {
+    if (user) {
+      navigate("/dashboard");
+    } else {
+      navigate("/signin");
+    }
+  };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50  backdrop-blur-xl border-b border-neutral-800/50">
+    <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl border-b border-neutral-800/50 bg-black/80">
       <div className="max-w-7xl mx-auto flex items-center justify-between py-4 px-6">
         
-        {/* Logo */}
-        <div className="flex items-center space-x-3">
+        {/* Logo - Clickable to home */}
+        <button 
+          onClick={() => navigate('/')}
+          className="flex items-center space-x-3 hover:opacity-80 transition-opacity"
+        >
           <div className="w-5 h-5 border-2 border-red-700 rotate-45"></div>
           <span className="text-2xl badscript tracking-wider text-white font-sans">
             SquadUp
           </span>
-        </div>
+        </button>
 
         {/* Navigation Links */}
         <div className="hidden md:flex items-center gap-10">
@@ -74,12 +73,12 @@ export default function Navbar() {
           })}
         </div>
 
-        {/* Sign Up Button */}
+        {/* Auth Button */}
         <button
-          onClick={handleSignUp}
+          onClick={handleAuthClick}
           className="bg-red-700 hover:bg-red-800 text-white text-sm font-bold px-8 py-2.5 rounded-full shadow-lg hover:shadow-red-900/50 transition-all duration-300 hover:scale-105"
         >
-          {user ? "Sign Up" : "Login"}
+          {user ? "Dashboard" : "Sign In"}
         </button>
       </div>
     </nav>
