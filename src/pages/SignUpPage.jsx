@@ -91,14 +91,14 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white flex items-center justify-center px-6 py-12 relative">
+    <div className="min-h-screen bg-black  text-white flex items-center justify-center px-6 py-12 relative">
       {/* Back to Home Button - Top Left */}
       <button
         onClick={() => navigate('/')}
         className="absolute top-6 left-6 flex items-center gap-2 text-gray-400 hover:text-white transition-colors group"
       >
         <Home size={20} className="group-hover:-translate-x-1 transition-transform duration-300" />
-        <span className="text-sm font-semibold">Back to Home</span>
+        <span className="text-sm group-hover:-translate-x-1 transition-transform duration-300 font-semibold">Home</span>
       </button>
 
       <div className="w-full max-w-md">
