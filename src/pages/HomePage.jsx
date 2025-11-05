@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronRight, Users, Star, TrendingUp } from "lucide-react";
 import Navbar from "../components/ui/Navbar";
-import Footer from "./Footer";
+import Footer from "../components/ui/Footer";
 import { AuthContext } from "../context/AuthContext";
 
 const FEATURES = [
@@ -101,7 +101,7 @@ export default function HomePage() {
           </div>
 
           {/* Right Content */}
-          <div className="hidden md:flex justify-center animate-slide-up items-center relative translate-y-[50px]">
+          <div className="hidden min-[1280px]:flex justify-center animate-slide-up items-center relative translate-y-[50px]">
             <div className="relative w-120 h-160 rounded-2xl border-2 border-red-600/30 flex items-center justify-center bg-gradient-to-br from-red-950/20 to-transparent backdrop-blur-sm shadow-2xl shadow-red-900/30">
               <div className="absolute inset-0 rounded-2xl bg-linear-to-t from-red-600/20 to-transparent" />
               <img
@@ -116,40 +116,42 @@ export default function HomePage() {
 
       {/* Features Section */}
       <section className="py-24 px-6 bg-neutral-900/50 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(220,38,38,0.05),transparent_50%)]" />
-        
-        <div className="max-w-7xl mx-auto text-center relative z-10">
-          <h2 className="text-4xl lg:text-6xl font-black text-white mb-4">
-            WHY <span className="bg-linear-to-r from-red-600 to-orange-500 bg-clip-text text-transparent">SQUADUP?</span>
-          </h2>
-          <p className="text-gray-400 text-xl badscript mb-20 max-w-2xl mx-auto">
-            Everything you need to find the perfect sports partner
-          </p>
+  <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(220,38,38,0.05),transparent_50%)]" />
+  
+  <div className="max-w-7xl mx-auto text-center relative z-10">
+    <h2 className="text-4xl lg:text-6xl font-black text-white mb-4">
+      WHY <span className="bg-linear-to-r from-red-600 to-orange-500 bg-clip-text text-transparent">SQUADUP?</span>
+    </h2>
+    <p className="text-gray-400 text-xl badscript mb-20 max-w-2xl mx-auto">
+      Everything you need to find the perfect sports partner
+    </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {FEATURES.map((feature, index) => {
-              const Icon = feature.icon;
-              return (
-                <div
-                  key={index}
-                  className="group bg-linear-to-br from-neutral-900 to-black border border-neutral-800 rounded-3xl p-8 hover:border-red-600/50 transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-red-900/30 relative overflow-hidden"
-                >
-                  <div className={`absolute inset-0 bg-linear-to-br ${feature.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-                  <div className="relative z-10">
-                    <div className="w-20 h-20 bg-linear-to-br from-red-700/30 to-red-900/30 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 border border-red-600/20">
-                      <Icon className="text-red-500" size={40} />
-                    </div>
-                    <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-red-500 transition-colors">
-                      {feature.title}
-                    </h3>
-                    <p className="text-gray-400 badscript leading-relaxed">{feature.text}</p>
-                  </div>
-                </div>
-              );
-            })}
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {FEATURES.map((feature, index) => {
+        const Icon = feature.icon;
+        return (
+          <div
+            key={index}
+            className="group bg-linear-to-br from-neutral-900 to-black border border-neutral-800 rounded-3xl p-8 hover:border-red-600/50 transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-red-900/30 relative overflow-hidden"
+          >
+            <div className={`absolute inset-0 bg-linear-to-br ${feature.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+            
+            <div className="relative z-10 flex flex-col items-center justify-center text-center">
+              <div className="w-20 h-20 mx-auto bg-gradient-to-br from-red-700/30 to-red-900/30 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 border border-red-600/20">
+                <Icon className="text-red-500" size={40} />
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-red-500 transition-colors">
+                {feature.title}
+              </h3>
+              <p className="text-gray-400 badscript leading-relaxed">{feature.text}</p>
+            </div>
           </div>
-        </div>
-      </section>
+        );
+      })}
+    </div>
+  </div>
+</section>
+
 
       {/* How It Works */}
       <section className="py-24 px-6 text-center relative bg-linear-to-b from-black to-neutral-900">
