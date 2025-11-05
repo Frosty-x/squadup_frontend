@@ -6,29 +6,23 @@ import { AuthContext } from '../context/AuthContext';
 export default function SignInPage() {
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  });
+  
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
+  // handle input changes and clear errors
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    // Clear error for this field when user starts typing
+    setFormData(prev => ({ ...prev, [name]: value }));
+    
     if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }));
+      setErrors(prev => ({ ...prev, [name]: '' }));
     }
   };
 
+  // Validate email and password
   const validateForm = () => {
     const newErrors = {};
 
@@ -46,29 +40,24 @@ export default function SignInPage() {
     return Object.keys(newErrors).length === 0;
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (!validateForm()) {
-      return;
-    }
+
+    if (!validateForm()) return;
 
     setLoading(true);
 
     try {
-      const response = await login({
+      const user = await login({
         email: formData.email.trim().toLowerCase(),
         password: formData.password
       });
 
-      // Check if user profile is complete
-      const user = response.data.user;
-      
-      // If user has no sports or location, redirect to onboarding
+      // Check if user needs to complete onboarding
       if (!user.sports || user.sports.length === 0 || !user.location?.city) {
         navigate('/onboarding/step1');
       } else {
-        // Profile is complete, go to dashboard
         navigate('/dashboard');
       }
     } catch (error) {
@@ -82,22 +71,24 @@ export default function SignInPage() {
 
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden flex items-center justify-center px-6 py-12 relative">
-      {/* Back to Home Button - Top Left */}
+      
+      {/* Back to Home Button */}
       <button
         onClick={() => navigate('/')}
         className="absolute top-6 left-6 flex items-center gap-2 text-gray-400 hover:text-white transition-colors group"
       >
         <Home size={20} className="group-hover:-translate-x-1 transition-transform duration-300" />
-        <span className="text-sm group-hover:-translate-x-1 transition-transform duration-300 font-semibold">Home</span>
+        <span className="text-sm group-hover:-translate-x-1 transition-transform duration-300 font-semibold">
+          Home
+        </span>
       </button>
 
       <div className="w-full max-w-md">
+        
         {/* Logo */}
         <div className="flex items-center justify-center space-x-3 mb-8">
           <div className="w-6 h-6 border-2 border-red-700 rotate-45"></div>
-          <span className="text-3xl badscript tracking-wider text-white">
-            SquadUp
-          </span>
+          <span className="text-3xl badscript tracking-wider text-white">SquadUp</span>
         </div>
 
         {/* Header */}
@@ -110,14 +101,15 @@ export default function SignInPage() {
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Global Error */}
+          
+          {/* Error Message */}
           {errors.submit && (
             <div className="bg-red-900/20 border border-red-700 rounded-lg p-4 text-red-400 text-sm">
               {errors.submit}
             </div>
           )}
 
-          {/* Email Field */}
+          {/* Email Input */}
           <div>
             <label className="block text-sm font-semibold text-gray-300 mb-2">
               Email Address
@@ -135,17 +127,13 @@ export default function SignInPage() {
                 } rounded-lg pl-12 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-red-700 transition-colors duration-300`}
               />
             </div>
-            {errors.email && (
-              <p className="mt-2 text-sm text-red-400">{errors.email}</p>
-            )}
+            {errors.email && <p className="mt-2 text-sm text-red-400">{errors.email}</p>}
           </div>
 
-          {/* Password Field */}
+          {/* Password Input */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="block text-sm font-semibold text-gray-300">
-                Password
-              </label>
+              <label className="block text-sm font-semibold text-gray-300">Password</label>
               <button
                 type="button"
                 className="text-sm text-red-600 hover:text-red-500 font-semibold transition-colors"
@@ -173,9 +161,7 @@ export default function SignInPage() {
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             </div>
-            {errors.password && (
-              <p className="mt-2 text-sm text-red-400">{errors.password}</p>
-            )}
+            {errors.password && <p className="mt-2 text-sm text-red-400">{errors.password}</p>}
           </div>
 
           {/* Submit Button */}

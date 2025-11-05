@@ -6,6 +6,7 @@ import { AuthContext } from '../context/AuthContext';
 export default function SignUpPage() {
   const navigate = useNavigate();
   const { register } = useContext(AuthContext);
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -17,21 +18,17 @@ export default function SignUpPage() {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
+  // Handle input changes and clear errors
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    // Clear error for this field when user starts typing
+    setFormData(prev => ({ ...prev, [name]: value }));
+
     if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }));
+      setErrors(prev => ({ ...prev, [name]: '' }));
     }
   };
 
+  // Validate all form fields
   const validateForm = () => {
     const newErrors = {};
 
@@ -63,12 +60,11 @@ export default function SignUpPage() {
     return Object.keys(newErrors).length === 0;
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (!validateForm()) {
-      return;
-    }
+
+    if (!validateForm()) return;
 
     setLoading(true);
 
@@ -78,8 +74,7 @@ export default function SignUpPage() {
         email: formData.email.trim().toLowerCase(),
         password: formData.password
       });
-      
-      // Navigate to onboarding step 1
+
       navigate('/onboarding/step1');
     } catch (error) {
       setErrors({
@@ -91,23 +86,25 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black  text-white flex items-center justify-center px-6 py-12 relative">
-      {/* Back to Home Button - Top Left */}
+    <div className="min-h-screen bg-black text-white flex items-center justify-center px-6 py-12 relative">
+
+      {/* Back to Home Button */}
       <button
         onClick={() => navigate('/')}
         className="absolute top-6 left-6 flex items-center gap-2 text-gray-400 hover:text-white transition-colors group"
       >
         <Home size={20} className="group-hover:-translate-x-1 transition-transform duration-300" />
-        <span className="text-sm group-hover:-translate-x-1 transition-transform duration-300 font-semibold">Home</span>
+        <span className="text-sm group-hover:-translate-x-1 transition-transform duration-300 font-semibold">
+          Home
+        </span>
       </button>
 
       <div className="w-full max-w-md">
+
         {/* Logo */}
         <div className="flex items-center justify-center space-x-3 mb-8">
           <div className="w-6 h-6 border-2 border-red-700 rotate-45"></div>
-          <span className="text-3xl badscript tracking-wider text-white">
-            SquadUp
-          </span>
+          <span className="text-3xl badscript tracking-wider text-white">SquadUp</span>
         </div>
 
         {/* Header */}
@@ -120,14 +117,15 @@ export default function SignUpPage() {
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Global Error */}
+
+          {/* Error Message */}
           {errors.submit && (
             <div className="bg-red-900/20 border border-red-700 rounded-lg p-4 text-red-400 text-sm">
               {errors.submit}
             </div>
           )}
 
-          {/* Name Field */}
+          {/* Name Input */}
           <div>
             <label className="block text-sm font-semibold text-gray-300 mb-2">
               Full Name
@@ -140,17 +138,14 @@ export default function SignUpPage() {
                 value={formData.name}
                 onChange={handleChange}
                 placeholder="Enter your name"
-                className={`w-full bg-neutral-900 border ${
-                  errors.name ? 'border-red-700' : 'border-neutral-800'
-                } rounded-lg pl-12 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-red-700 transition-colors duration-300`}
+                className={`w-full bg-neutral-900 border ${errors.name ? 'border-red-700' : 'border-neutral-800'
+                  } rounded-lg pl-12 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-red-700 transition-colors duration-300`}
               />
             </div>
-            {errors.name && (
-              <p className="mt-2 text-sm text-red-400">{errors.name}</p>
-            )}
+            {errors.name && <p className="mt-2 text-sm text-red-400">{errors.name}</p>}
           </div>
 
-          {/* Email Field */}
+          {/* Email Input */}
           <div>
             <label className="block text-sm font-semibold text-gray-300 mb-2">
               Email Address
@@ -163,17 +158,14 @@ export default function SignUpPage() {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="Enter your email"
-                className={`w-full bg-neutral-900 border ${
-                  errors.email ? 'border-red-700' : 'border-neutral-800'
-                } rounded-lg pl-12 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-red-700 transition-colors duration-300`}
+                className={`w-full bg-neutral-900 border ${errors.email ? 'border-red-700' : 'border-neutral-800'
+                  } rounded-lg pl-12 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-red-700 transition-colors duration-300`}
               />
             </div>
-            {errors.email && (
-              <p className="mt-2 text-sm text-red-400">{errors.email}</p>
-            )}
+            {errors.email && <p className="mt-2 text-sm text-red-400">{errors.email}</p>}
           </div>
 
-          {/* Password Field */}
+          {/* Password Input */}
           <div>
             <label className="block text-sm font-semibold text-gray-300 mb-2">
               Password
@@ -186,9 +178,8 @@ export default function SignUpPage() {
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="Create a password"
-                className={`w-full bg-neutral-900 border ${
-                  errors.password ? 'border-red-700' : 'border-neutral-800'
-                } rounded-lg pl-12 pr-12 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-red-700 transition-colors duration-300`}
+                className={`w-full bg-neutral-900 border ${errors.password ? 'border-red-700' : 'border-neutral-800'
+                  } rounded-lg pl-12 pr-12 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-red-700 transition-colors duration-300`}
               />
               <button
                 type="button"
@@ -198,12 +189,10 @@ export default function SignUpPage() {
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             </div>
-            {errors.password && (
-              <p className="mt-2 text-sm text-red-400">{errors.password}</p>
-            )}
+            {errors.password && <p className="mt-2 text-sm text-red-400">{errors.password}</p>}
           </div>
 
-          {/* Confirm Password Field */}
+          {/* Confirm Password Input */}
           <div>
             <label className="block text-sm font-semibold text-gray-300 mb-2">
               Confirm Password
@@ -216,9 +205,8 @@ export default function SignUpPage() {
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 placeholder="Confirm your password"
-                className={`w-full bg-neutral-900 border ${
-                  errors.confirmPassword ? 'border-red-700' : 'border-neutral-800'
-                } rounded-lg pl-12 pr-12 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-red-700 transition-colors duration-300`}
+                className={`w-full bg-neutral-900 border ${errors.confirmPassword ? 'border-red-700' : 'border-neutral-800'
+                  } rounded-lg pl-12 pr-12 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-red-700 transition-colors duration-300`}
               />
               <button
                 type="button"
@@ -228,9 +216,7 @@ export default function SignUpPage() {
                 {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             </div>
-            {errors.confirmPassword && (
-              <p className="mt-2 text-sm text-red-400">{errors.confirmPassword}</p>
-            )}
+            {errors.confirmPassword && <p className="mt-2 text-sm text-red-400">{errors.confirmPassword}</p>}
           </div>
 
           {/* Submit Button */}

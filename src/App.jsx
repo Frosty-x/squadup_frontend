@@ -18,10 +18,7 @@ function App() {
       
       {/* Dashboard */}
       <Route path="/dashboard" element={<Dashboard />} />
-      
-      {/* TEST ROUTE - Remove this later */}
-      <Route path="/test-onboarding" element={<Navigate to="/onboarding/step1" replace />} />
-      
+            
       {/* Catch all - redirect to home */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
