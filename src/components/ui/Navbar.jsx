@@ -1,10 +1,10 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext";
 import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 export default function Navbar() {
   const navigate = useNavigate();
-  const location = useLocation(); 
+  const location = useLocation();
   const { user, loading } = useContext(AuthContext);
 
   if (loading) return null;
@@ -16,25 +16,11 @@ export default function Navbar() {
     { name: "ABOUT", href: "/about" }
   ];
 
-  // Handle navigation
-  const handleNavClick = (href) => {
-    navigate(href);
-  };
-
-  // Handle Auth Button Click
-  const handleAuthClick = () => {
-    if (user) {
-      navigate("/dashboard");
-    } else {
-      navigate("/signin");
-    }
-  };
-
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl border-b border-neutral-800/50 bg-black/80">
       <div className="max-w-7xl mx-auto flex items-center justify-between py-4 px-6">
         
-        {/* Logo - Clickable to home */}
+        {/* Logo */}
         <button 
           onClick={() => navigate('/')}
           className="flex items-center space-x-3 hover:opacity-80 transition-opacity"
@@ -53,21 +39,17 @@ export default function Navbar() {
             return (
               <button
                 key={name}
-                onClick={() => handleNavClick(href)}
+                onClick={() => navigate(href)}
                 className={`relative text-sm font-semibold tracking-wide group transition-colors duration-300 ${
-                  isActive 
-                    ? "text-white" 
-                    : "text-gray-400 hover:text-white"
+                  isActive ? "text-white" : "text-gray-400 hover:text-white"
                 }`}
               >
                 {name}
                 <span 
                   className={`absolute left-0 -bottom-1.5 h-0.5 bg-red-600 transition-all duration-300 ${
-                    isActive 
-                      ? "w-full" 
-                      : "w-0 group-hover:w-full"
+                    isActive ? "w-full" : "w-0 group-hover:w-full"
                   }`}
-                ></span>
+                />
               </button>
             );
           })}
@@ -75,7 +57,7 @@ export default function Navbar() {
 
         {/* Auth Button */}
         <button
-          onClick={handleAuthClick}
+          onClick={() => navigate(user ? "/dashboard" : "/signin")}
           className="bg-red-700 hover:bg-red-800 text-white text-sm font-bold px-8 py-2.5 rounded-full shadow-lg hover:shadow-red-900/50 transition-all duration-300 hover:scale-105"
         >
           {user ? "Dashboard" : "Sign In"}

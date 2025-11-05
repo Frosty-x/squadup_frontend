@@ -1,20 +1,19 @@
-import React, { createContext, useEffect, useState } from 'react'
+import { createContext, useEffect, useState } from 'react';
 import authService from '../services/authService';
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-   useEffect(() => {
+    useEffect(() => {
         const initAuth = async () => {
-            const token = localStorage.getItem('token')
+            const token = localStorage.getItem('token');
             if (token) {
                 try {
                     const response = await authService.getCurrentUser();
-                    setUser(response.data); 
+                    setUser(response.data);
                 } catch (error) {
                     console.error('Failed to get user:', error);
                     localStorage.removeItem('token');
@@ -26,23 +25,36 @@ export const AuthProvider = ({ children }) => {
         initAuth();
     }, []);
 
-  const register = async (userData) => {
+    const register = async (userData) => {
         try {
             const response = await authService.register(userData);
-            setUser(response.data.user);
+            setUser(response.data);
+            return response;
         } catch (error) {
             console.error('Registration failed:', error);
-            throw error; 
+            throw error;
         }
-    }
+    };
 
     const login = async (credentials) => {
         try {
             const response = await authService.login(credentials);
-            setUser(response.data.user); 
+            setUser(response.data);
+            return response;
         } catch (error) {
             console.error('Login failed:', error);
-            throw error; 
+            throw error;
+        }
+    };
+
+    const refreshUser = async () => {
+        try {
+            const response = await authService.getCurrentUser();
+            setUser(response.data);
+            return response;
+        } catch (error) {
+            console.error('Failed to refresh user:', error);
+            throw error;
         }
     };
 
@@ -51,19 +63,19 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
     };
 
-
     const value = {
         user,
         loading,
         register,
         login,
         logout,
+        refreshUser,
         isAuthenticated: !!user,
     };
 
-    return(
+    return (
         <AuthContext.Provider value={value}>
             {children}
         </AuthContext.Provider>
-    )
-}
+    );
+};

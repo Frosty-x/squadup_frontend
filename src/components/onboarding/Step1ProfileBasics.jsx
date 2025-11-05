@@ -1,12 +1,13 @@
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Upload, User, ChevronRight } from 'lucide-react';
+import { User, ChevronRight } from 'lucide-react';
 import { AuthContext } from '../../context/AuthContext';
 import api from '../../services/api';
 
 export default function Step1ProfileBasics() {
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
+  const { user, refreshUser } = useContext(AuthContext);
+  
   const [profilePic, setProfilePic] = useState(user?.profilePic || '');
   const [bio, setBio] = useState(user?.bio || '');
   const [loading, setLoading] = useState(false);
@@ -20,13 +21,13 @@ export default function Step1ProfileBasics() {
     setLoading(true);
     setError('');
 
-    try {
-      // Update user profile with bio (profilePic already has default)
-      await api.put('/users/profile', {
+    try {                                           //caution under working
+      await api.put('/user/profile/update', {
         bio: bio.trim() || undefined,
         profilePic: profilePic || undefined
-      });
+      }); 
 
+      await refreshUser();
       navigate('/onboarding/step2');
     } catch (err) {
       setError('Failed to update profile. Please try again.',err);
@@ -37,6 +38,7 @@ export default function Step1ProfileBasics() {
 
   return (
     <div className="space-y-8">
+      
       {/* Header */}
       <div className="text-center">
         <h1 className="text-4xl lg:text-5xl font-black mb-4">
@@ -60,29 +62,26 @@ export default function Step1ProfileBasics() {
           Profile Picture
         </label>
         <div className="flex flex-col items-center gap-6">
-          {/* Profile Pic Preview */}
-          <div className="relative">
-            <div className="w-32 h-32 rounded-full bg-neutral-800 border-4 border-red-700 overflow-hidden">
-              {profilePic ? (
-                <img
-                  src={profilePic}
-                  alt="Profile"
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <User className="text-gray-500" size={48} />
-                </div>
-              )}
-            </div>
+          
+          {/* Profile Preview */}
+          <div className="w-32 h-32 rounded-full bg-neutral-800 border-4 border-red-700 overflow-hidden">
+            {profilePic ? (
+              <img
+                src={profilePic}
+                alt="Profile"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center">
+                <User className="text-gray-500" size={48} />
+              </div>
+            )}
           </div>
 
           {/* Upload Info */}
-          <div className="text-center">
-            <p className="text-gray-400 text-sm badscript mb-2">
-              Using default avatar. You can upload a custom picture later from settings.
-            </p>
-          </div>
+          <p className="text-gray-400 text-sm text-center badscript">
+            Using default avatar. You can upload a custom picture later from settings.
+          </p>
         </div>
       </div>
 
@@ -119,7 +118,7 @@ export default function Step1ProfileBasics() {
         >
           {loading ? (
             <>
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
               Saving...
             </>
           ) : (

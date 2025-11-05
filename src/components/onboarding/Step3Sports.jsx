@@ -7,14 +7,14 @@ import api from '../../services/api';
 const SKILL_LEVELS = ['Beginner', 'Intermediate', 'Advanced', 'Professional'];
 
 const POPULAR_SPORTS = [
-  'Basketball', 'Football', 'Soccer', 'Tennis', 'Badminton',
-  'Cricket', 'Volleyball', 'Table Tennis', 'Swimming', 'Running',
-  'Cycling', 'Gym/Fitness', 'Yoga', 'Boxing', 'Golf'
+  'Basketball', 'Football', 'Badminton',
+  'Cricket', 'Volleyball', 'Table Tennis',
 ];
 
 export default function Step3Sports() {
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
+  const { user, refreshUser } = useContext(AuthContext);
+
   const [sports, setSports] = useState(user?.sports || []);
   const [newSportName, setNewSportName] = useState('');
   const [newSportSkill, setNewSportSkill] = useState('Beginner');
@@ -24,7 +24,7 @@ export default function Step3Sports() {
 
   const handleAddSport = (sportName = newSportName) => {
     const trimmedName = sportName.trim();
-    
+
     if (!trimmedName) return;
 
     // Check if sport already exists
@@ -65,13 +65,11 @@ export default function Step3Sports() {
     setError('');
 
     try {
-      // Update user sports
-      await api.put('/users/profile', { sports });
-      
-      // Navigate to dashboard
+      await api.put('/user/profile/update', { sports });
+      await refreshUser();
       navigate('/dashboard');
     } catch (err) {
-      setError('Failed to update sports. Please try again.',err);
+      setError('Failed to update sports. Please try again.', err);
     } finally {
       setLoading(false);
     }
@@ -79,6 +77,7 @@ export default function Step3Sports() {
 
   return (
     <div className="space-y-8">
+
       {/* Header */}
       <div className="text-center">
         <h1 className="text-4xl lg:text-5xl font-black mb-4">
@@ -140,11 +139,10 @@ export default function Step3Sports() {
                     key={sport}
                     onClick={() => !isAdded && handleAddSport(sport)}
                     disabled={isAdded}
-                    className={`px-4 py-3 rounded-lg font-semibold text-sm transition-all duration-300 ${
-                      isAdded
+                    className={`px-4 py-3 rounded-lg font-semibold text-sm transition-all duration-300 ${isAdded
                         ? 'bg-neutral-800 text-gray-500 cursor-not-allowed'
                         : 'bg-black border border-neutral-800 text-white hover:border-red-700 hover:scale-105'
-                    }`}
+                      }`}
                   >
                     {sport}
                   </button>
@@ -234,7 +232,7 @@ export default function Step3Sports() {
         >
           {loading ? (
             <>
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
               Completing...
             </>
           ) : (

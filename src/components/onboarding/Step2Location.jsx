@@ -6,7 +6,8 @@ import api from '../../services/api';
 
 export default function Step2Location() {
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
+  const { user, refreshUser } = useContext(AuthContext);
+  
   const [city, setCity] = useState(user?.location?.city || '');
   const [address, setAddress] = useState(user?.location?.address || '');
   const [loading, setLoading] = useState(false);
@@ -21,14 +22,14 @@ export default function Step2Location() {
     setError('');
 
     try {
-      // Update user location
-      await api.put('/users/profile', {
+      await api.put('/user/profile/update', {
         location: {
           city: city.trim() || undefined,
           address: address.trim() || undefined
         }
       });
 
+      await refreshUser();
       navigate('/onboarding/step3');
     } catch (err) {
       setError('Failed to update location. Please try again.',err);
@@ -39,6 +40,7 @@ export default function Step2Location() {
 
   return (
     <div className="space-y-8">
+      
       {/* Header */}
       <div className="text-center">
         <h1 className="text-4xl lg:text-5xl font-black mb-4">
@@ -58,7 +60,8 @@ export default function Step2Location() {
 
       {/* Location Form */}
       <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-8 space-y-6">
-        {/* City Field */}
+        
+        {/* City Input */}
         <div>
           <label className="block text-lg font-bold text-white mb-3">
             City <span className="text-red-600">*</span>
@@ -78,7 +81,7 @@ export default function Step2Location() {
           </p>
         </div>
 
-        {/* Address Field */}
+        {/* Address Input */}
         <div>
           <label className="block text-lg font-bold text-white mb-3">
             Address <span className="text-gray-500 text-sm font-normal">(Optional)</span>
@@ -99,7 +102,7 @@ export default function Step2Location() {
         </div>
       </div>
 
-      {/* Info Box */}
+      {/* Privacy Notice */}
       <div className="bg-red-900/10 border border-red-700/30 rounded-lg p-4">
         <p className="text-sm text-gray-300 badscript">
           💡 <span className="font-semibold">Privacy Note:</span> Your exact address is never shared publicly. Only your city is visible to other players.
@@ -121,7 +124,7 @@ export default function Step2Location() {
         >
           {loading ? (
             <>
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
               Saving...
             </>
           ) : (

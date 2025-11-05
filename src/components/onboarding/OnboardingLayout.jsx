@@ -8,16 +8,17 @@ export default function OnboardingLayout() {
   
   // Determine current step based on route
   const getCurrentStep = () => {
-    if (location.pathname.includes('step1')) return 1;
-    if (location.pathname.includes('step2')) return 2;
     if (location.pathname.includes('step3')) return 3;
+    if (location.pathname.includes('step2')) return 2;
     return 1;
   };
 
   const currentStep = getCurrentStep();
+  const stepLabels = ['Profile', 'Location', 'Sports'];
 
   return (
     <div className="min-h-screen bg-black text-white">
+      
       {/* Header with Logo */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-xl border-b border-neutral-800/50">
         <div className="max-w-4xl mx-auto flex items-center justify-between py-4 px-6">
@@ -36,6 +37,8 @@ export default function OnboardingLayout() {
       {/* Progress Bar */}
       <div className="fixed top-[73px] left-0 right-0 z-40 bg-neutral-900">
         <div className="max-w-4xl mx-auto px-6 py-4">
+          
+          {/* Progress Indicators */}
           <div className="flex items-center gap-2">
             {[1, 2, 3].map((step) => (
               <div key={step} className="flex-1">
@@ -43,22 +46,23 @@ export default function OnboardingLayout() {
                   step <= currentStep ? 'bg-red-600' : 'bg-neutral-800'
                 }`}>
                   {step === currentStep && (
-                    <div className="h-full bg-red-500 rounded-full animate-pulse"></div>
+                    <div className="h-full bg-red-500 rounded-full animate-pulse" />
                   )}
                 </div>
               </div>
             ))}
           </div>
+
+          {/* Step Labels */}
           <div className="flex justify-between mt-3 text-xs font-semibold">
-            <span className={currentStep >= 1 ? 'text-red-600' : 'text-gray-500'}>
-              Profile
-            </span>
-            <span className={currentStep >= 2 ? 'text-red-600' : 'text-gray-500'}>
-              Location
-            </span>
-            <span className={currentStep >= 3 ? 'text-red-600' : 'text-gray-500'}>
-              Sports
-            </span>
+            {stepLabels.map((label, index) => (
+              <span 
+                key={label}
+                className={currentStep >= index + 1 ? 'text-red-600' : 'text-gray-500'}
+              >
+                {label}
+              </span>
+            ))}
           </div>
         </div>
       </div>
