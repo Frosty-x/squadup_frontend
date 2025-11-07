@@ -35,7 +35,31 @@ const authService = {
 
     logout: () => {
         localStorage.removeItem('token');
+    },
+
+    updateProfilePic: async (profilePic) => {
+        try {
+            const response = await api.put('/user/profile/picture', profilePic);
+            return response.data;
+        }
+        catch (error) {
+            console.error('Get current user failed:', error);
+            throw error;
+        }
+    },
+
+    updateProfile: async (profileData) => {
+        try {
+            const response = await api.put('/user/profile/update', profileData);
+            return response.data;
+        }
+        catch (error) {
+            console.error('Get current user failed:', error);
+            throw error;
+        }
     }
+
+
 }
 
 export default authService;
