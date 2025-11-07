@@ -1,14 +1,18 @@
-import { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Plus, X, Trophy, ChevronRight } from 'lucide-react';
-import { AuthContext } from '../../context/AuthContext';
-import api from '../../services/api';
+import { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { Plus, X, Trophy, ChevronRight, Edit3, Save } from "lucide-react";
+import { AuthContext } from "../../context/AuthContext";
+import api from "../../services/api";
 
-const SKILL_LEVELS = ['Beginner', 'Intermediate', 'Advanced', 'Professional'];
+const SKILL_LEVELS = ["Beginner", "Intermediate", "Advanced", "Professional"];
 
 const POPULAR_SPORTS = [
-  'Basketball', 'Football', 'Badminton',
-  'Cricket', 'Volleyball', 'Table Tennis',
+  "Basketball",
+  "Football",
+  "Badminton",
+  "Cricket",
+  "Volleyball",
+  "Table Tennis",
 ];
 
 export default function Step3Sports() {
@@ -16,60 +20,71 @@ export default function Step3Sports() {
   const { user, refreshUser } = useContext(AuthContext);
 
   const [sports, setSports] = useState(user?.sports || []);
-  const [newSportName, setNewSportName] = useState('');
-  const [newSportSkill, setNewSportSkill] = useState('Beginner');
+  const [newSportName, setNewSportName] = useState("");
+  const [newSportSkill, setNewSportSkill] = useState("Beginner");
   const [showCustomInput, setShowCustomInput] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
+  const [editingIndex, setEditingIndex] = useState(null);
 
+  // ✅ Add sport (either custom or from popular list)
   const handleAddSport = (sportName = newSportName) => {
     const trimmedName = sportName.trim();
-
     if (!trimmedName) return;
 
-    // Check if sport already exists
-    if (sports.some(s => s.name.toLowerCase() === trimmedName.toLowerCase())) {
-      setError('You already added this sport');
+    if (
+      sports.some((s) => s.name.toLowerCase() === trimmedName.toLowerCase())
+    ) {
+      setError("You already added this sport");
       return;
     }
 
-    setSports([...sports, {
-      name: trimmedName,
-      skillLevel: newSportSkill,
-      averageRating: 0,
-      totalRatings: 0,
-      gamesPlayed: 0
-    }]);
+    setSports([
+      ...sports,
+      {
+        name: trimmedName,
+        skillLevel: newSportSkill,
+        averageRating: 0,
+        totalRatings: 0,
+        gamesPlayed: 0,
+      },
+    ]);
 
-    setNewSportName('');
-    setNewSportSkill('Beginner');
+    setNewSportName("");
+    setNewSportSkill("Beginner");
     setShowCustomInput(false);
-    setError('');
+    setError("");
   };
 
   const handleRemoveSport = (index) => {
     setSports(sports.filter((_, i) => i !== index));
   };
 
+  const handleSkillChange = (index, newLevel) => {
+    const updated = [...sports];
+    updated[index].skillLevel = newLevel;
+    setSports(updated);
+  };
+
   const handleSkip = () => {
-    navigate('/dashboard');
+    navigate("/dashboard");
   };
 
   const handleComplete = async () => {
     if (sports.length === 0) {
-      setError('Please add at least one sport or skip this step');
+      setError("Please add at least one sport or skip this step");
       return;
     }
 
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
-      await api.put('/user/profile/update', { sports });
+      await api.put("/user/profile/update", { sports });
       await refreshUser();
-      navigate('/dashboard');
+      navigate("/dashboard");
     } catch (err) {
-      setError('Failed to update sports. Please try again.', err);
+      setError("Failed to update sports. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -77,14 +92,13 @@ export default function Step3Sports() {
 
   return (
     <div className="space-y-8">
-
       {/* Header */}
       <div className="text-center">
         <h1 className="text-4xl lg:text-5xl font-black mb-4">
           WHAT DO YOU <span className="text-red-600">PLAY?</span>
         </h1>
         <p className="text-gray-400 text-lg badscript">
-          Add your sports and skill levels
+          Add your sports and select your difficulty level
         </p>
       </div>
 
@@ -106,18 +120,51 @@ export default function Step3Sports() {
             {sports.map((sport, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between bg-black border border-neutral-800 rounded-lg p-4 hover:border-red-700 transition-colors duration-300"
+                className="flex flex-col sm:flex-row sm:items-center justify-between bg-black border border-neutral-800 rounded-lg p-4 hover:border-red-700 transition-colors duration-300"
               >
-                <div>
+                <div className="flex-1">
                   <p className="font-bold text-white">{sport.name}</p>
-                  <p className="text-sm text-gray-400 badscript">{sport.skillLevel}</p>
+                  {editingIndex === index ? (
+                    <select
+                      value={sport.skillLevel}
+                      onChange={(e) => handleSkillChange(index, e.target.value)}
+                      className="mt-2 bg-neutral-900 border border-neutral-700 text-white text-sm px-3 py-2 rounded-lg focus:outline-none focus:border-red-600"
+                    >
+                      {SKILL_LEVELS.map((level) => (
+                        <option key={level} value={level}>
+                          {level}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <p className="text-sm text-gray-400 badscript">
+                      {sport.skillLevel}
+                    </p>
+                  )}
                 </div>
-                <button
-                  onClick={() => handleRemoveSport(index)}
-                  className="text-gray-500 hover:text-red-600 transition-colors"
-                >
-                  <X size={20} />
-                </button>
+                <div className="flex items-center gap-3 mt-3 sm:mt-0">
+                  {editingIndex === index ? (
+                    <button
+                      onClick={() => setEditingIndex(null)}
+                      className="text-green-500 hover:text-green-600 transition-colors"
+                    >
+                      <Save size={20} />
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => setEditingIndex(index)}
+                      className="text-gray-400 hover:text-red-600 transition-colors"
+                    >
+                      <Edit3 size={18} />
+                    </button>
+                  )}
+                  <button
+                    onClick={() => handleRemoveSport(index)}
+                    className="text-gray-500 hover:text-red-600 transition-colors"
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -133,16 +180,19 @@ export default function Step3Sports() {
           <>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {POPULAR_SPORTS.map((sport) => {
-                const isAdded = sports.some(s => s.name.toLowerCase() === sport.toLowerCase());
+                const isAdded = sports.some(
+                  (s) => s.name.toLowerCase() === sport.toLowerCase()
+                );
                 return (
                   <button
                     key={sport}
                     onClick={() => !isAdded && handleAddSport(sport)}
                     disabled={isAdded}
-                    className={`px-4 py-3 rounded-lg font-semibold text-sm transition-all duration-300 ${isAdded
-                        ? 'bg-neutral-800 text-gray-500 cursor-not-allowed'
-                        : 'bg-black border border-neutral-800 text-white hover:border-red-700 hover:scale-105'
-                      }`}
+                    className={`px-4 py-3 rounded-lg font-semibold text-sm transition-all duration-300 ${
+                      isAdded
+                        ? "bg-neutral-800 text-gray-500 cursor-not-allowed"
+                        : "bg-black border border-neutral-800 text-white hover:border-red-700 hover:scale-105"
+                    }`}
                   >
                     {sport}
                   </button>
@@ -197,8 +247,8 @@ export default function Step3Sports() {
               <button
                 onClick={() => {
                   setShowCustomInput(false);
-                  setNewSportName('');
-                  setNewSportSkill('Beginner');
+                  setNewSportName("");
+                  setNewSportSkill("Beginner");
                 }}
                 className="flex-1 border border-neutral-800 hover:border-red-700 text-white font-bold text-sm px-6 py-3 rounded-lg transition-all duration-300"
               >
