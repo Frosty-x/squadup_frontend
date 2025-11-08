@@ -162,19 +162,29 @@ export default function Dashboard() {
                   </div>
                 </div>
               </div>
-
+              
               <div className="pt-4 border-t border-neutral-800">
+                
                 <p className="text-sm text-gray-500 mb-2">Availability</p>
-                <span className={`inline-block px-4 py-2 rounded-full text-sm font-bold ${
+                <div className='space-y-3 text-sm font-bo'>
+                <div className='flex items-center justify-between py-3 border-b border-zinc-700/50'>
+                  <span className='text-gray-300'>Member Since</span>
+                  <span className='text-green-400'>{user?.createdAt?.split("T")[0]}</span>
+                </div>
+                <div  className='flex items-center justify-between'>
+                  <span className='text-gray-300'>Account Status</span>
+                <span className={`inline-block py-1 rounded-full text-sm ${
                   user.availability === 'Available' 
-                    ? 'bg-green-900/30 text-green-400 border border-green-700' 
+                    ? ' text-green-400 '
                     : user.availability === 'Busy'
                     ? 'bg-yellow-900/30 text-yellow-400 border border-yellow-700'
                     : 'bg-red-900/30 text-red-400 border border-red-700'
                 }`}>
                   {user.availability || 'Available'}
                 </span>
+                </div>
               </div>
+            </div>
             </div>
           </div>
         </div>
