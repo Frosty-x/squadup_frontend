@@ -251,8 +251,10 @@ export default function Dashboard() {
           <button className="bg-red-700 hover:bg-red-800 text-white font-bold text-lg px-8 py-6 rounded-2xl shadow-lg hover:shadow-red-900/50 transition-all duration-300 hover:scale-105">
             FIND PLAYERS
           </button>
-          <button className="bg-neutral-900 border-2 border-neutral-800 hover:border-red-700 text-white font-bold text-lg px-8 py-6 rounded-2xl transition-all duration-300 hover:scale-105">
-            BROWSE GAMES
+          <button 
+          onClick={()=>navigate('/sports')}
+          className="bg-neutral-900 border-2 border-neutral-800 hover:border-red-700 text-white font-bold text-lg px-8 py-6 rounded-2xl transition-all duration-300 hover:scale-105">
+            BROWSE GAMES  
           </button>
         </div>
       </main>
