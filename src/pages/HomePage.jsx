@@ -50,55 +50,60 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white overflow-x-hidden overflow-y-auto w-full max-w-full">
+    <div className="min-h-screen bg-black text-white overflow-x-hidden overflow-y-auto  w-full max-w-full">
       <Navbar />
 
       {/* Hero Section */}
-      <section className="relative flex items-center justify-center pt-24 pb-16 px-6 bg-linear-to-br from-black via-neutral-900 to-red-950/20 overflow-hidden">
-        
-        {/* Animated Background */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-red-600/10 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-red-700/5 rounded-full blur-3xl animate-pulse delay-1000" />
-        </div>
+     <section className="relative flex flex-col lg:flex-row items-center justify-center pt-20 sm:pt-24 pb-16 px-4 sm:px-8 bg-gradient-to-br from-black via-neutral-900 to-red-950/20 overflow-hidden">
+  {/* Animated Background */}
+  <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    <div className="absolute top-10 left-10 w-48 sm:w-64 h-48 sm:h-64 bg-red-600/10 rounded-full blur-3xl animate-pulse" />
+    <div className="absolute bottom-10 right-10 w-64 sm:w-80 h-64 sm:h-80 bg-red-700/5 rounded-full blur-3xl animate-pulse delay-1000" />
+  </div>
 
-        <div className="max-w-7xl w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center relative z-10">
-          
-          {/* Left Content */}
-          <div className="space-y-6 animate-slideInLeft max-w-xl">
-            <div className="inline-block px-4 py-2 bg-red-600/20 border border-red-600/30 rounded-full mb-4">
-              <span className="text-red-500 text-sm font-bold">🔥 JOIN THE MOVEMENT</span>
-            </div>
-            <h1 className="text-5xl lg:text-7xl font-black leading-tight tracking-tight">
-              <span className="block text-white mb-2 bg-linear-to-r from-white to-gray-300 bg-clip-text">
-                FIND YOUR
-              </span>
-              <span className="block bg-linear-to-r from-red-600 via-red-500 to-orange-500 bg-clip-text text-transparent">
-                PERFECT TEAMMATE!
-              </span>
-            </h1>
-            <div className="space-y-3 text-lg text-gray-300 pl-1">
-              <p className="font-medium badscript flex items-center gap-2">
-                <span className="w-2 h-2 bg-red-600 rounded-full" />
-                Connect with athletes in your area.
-              </p>
-              <p className="badscript flex items-center gap-2">
-                <span className="w-2 h-2 bg-red-600 rounded-full" />
-                Match skills, rate players, and level up your game.
-              </p>
-            </div>
-            <button
-              onClick={handleGetStarted}
-              className="group relative bg-linear-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold text-sm px-10 py-4 rounded-full transition-all duration-300 flex items-center gap-3 hover:scale-105 shadow-2xl shadow-red-900/50 hover:shadow-red-600/60 mt-8 overflow-hidden"
-            >
-              <span className="absolute inset-0 w-full h-full bg-linear-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-              <span className="relative">GET STARTED</span>
-              <ChevronRight
-                className="relative group-hover:translate-x-1 transition-transform duration-300"
-                size={20}
-              />
-            </button>
-          </div>
+  {/* Content Wrapper */}
+  <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
+    
+    {/* Left Content */}
+    <div className="space-y-6 animate-slideInLeft text-center lg:text-left max-w-xl mx-auto lg:mx-0">
+      <div className="inline-block px-4 py-2 bg-red-600/20 border border-red-600/30 rounded-full mb-4">
+        <span className="text-red-500 text-xs sm:text-sm font-bold">
+          🔥 JOIN THE MOVEMENT
+        </span>
+      </div>
+
+      <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black leading-tight tracking-tight">
+        <span className="block text-white mb-2 bg-gradient-to-r from-white to-gray-300 bg-clip-text">
+          FIND YOUR
+        </span>
+        <span className="block bg-gradient-to-r from-red-600 via-red-500 to-orange-500 bg-clip-text text-transparent">
+          PERFECT TEAMMATE!
+        </span>
+      </h1>
+
+      <div className="space-y-3 text-base sm:text-lg text-gray-300 pl-1">
+        <p className="font-medium flex items-center justify-center lg:justify-start gap-2">
+          <span className="w-2 h-2 bg-red-600 rounded-full" />
+          Connect with athletes in your area.
+        </p>
+        <p className="flex items-center justify-center lg:justify-start gap-2">
+          <span className="w-2 h-2 bg-red-600 rounded-full" />
+          Match skills, rate players, and level up your game.
+        </p>
+      </div>
+
+      <button
+        onClick={handleGetStarted}
+        className="group relative bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold text-sm sm:text-base px-8 sm:px-10 py-3.5 sm:py-4 rounded-full transition-all duration-300 flex items-center justify-center lg:justify-start gap-3 hover:scale-105 shadow-2xl shadow-red-900/50 hover:shadow-red-600/60 mt-8 overflow-hidden mx-auto lg:mx-0"
+      >
+        <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+        <span className="relative">GET STARTED</span>
+        <ChevronRight
+          className="relative group-hover:translate-x-1 transition-transform duration-300"
+          size={20}
+        />
+      </button>
+    </div>
 
           {/* Right Content */}
           <div className="hidden min-[1280px]:flex justify-center animate-slide-up items-center relative translate-y-[50px]">

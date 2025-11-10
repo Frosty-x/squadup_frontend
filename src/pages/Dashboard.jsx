@@ -1,11 +1,12 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { MapPin, Trophy, Star, LogOut, User, Edit } from 'lucide-react';
+import { MapPin, Trophy, Star, LogOut, User, Edit, Camera } from 'lucide-react';
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { user, logout, loading } = useContext(AuthContext);
+  const { user, logout, loading, updateProfilePic,updateProfile } = useContext(AuthContext);
+  const [selectedImage, setSelectedImage] = useState(null)
 
   useEffect(() => {
     // Redirect to signin if not authenticated
@@ -31,6 +32,19 @@ export default function Dashboard() {
     return null;
   }
 
+  const handelImageUpload = async(e) => {
+    const file = e.target.files[0]
+    if(!file) return;
+
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+
+    reader.onload = async ()=>{
+      const base64Image = reader.result
+      setSelectedImage(base64Image)
+      await updateProfilePic({profilePic: base64Image})
+    }
+  }
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Header */}
@@ -70,69 +84,99 @@ export default function Dashboard() {
           </p>
         </div>
 
-        {/* Profile Card */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-          {/* Profile Info */}
-          <div className="lg:col-span-2 bg-neutral-900 border border-neutral-800 rounded-2xl p-8">
-            <div className="flex items-start justify-between mb-6">
-              <h2 className="text-2xl font-bold text-white">Your Profile</h2>
-              <button
-                onClick={() => navigate('/onboarding/step1')}
-                className="flex items-center gap-2 text-red-600 hover:text-red-500 font-semibold text-sm transition-colors"
-              >
-                <Edit size={18} />
-                Edit Profile
-              </button>
-            </div>
-
-            <div className="flex items-start gap-6">
-              {/* Profile Picture */}
-              <div className="w-24 h-24 rounded-full bg-neutral-800 border-4 border-red-700 overflow-hidden shrink-0">
-                {user.profilePic ? (
-                  <img
-                    src={user.profilePic}
-                    alt={user.name}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <User className="text-gray-500" size={40} />
-                  </div>
-                )}
+    {/* Profile Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-3  gap-6">
+          {/* Profile Card */}
+          <div className="bg-neutral-900 border  border-neutral-800 rounded-2xl p-8">
+            <div className="text-center">
+              <h2 className="text-2xl font-bold mb-1">{user.name || 'Unknown'}</h2>
+              {/* Avatar */}
+              <div className="w-48 h-48 mx-auto mb-6 rounded-full overflow-hidden border-4 border-neutral-800">
+                <img src={selectedImage || user.profilePic || 'https://i.pinimg.com/736x/fd/b0/50/fdb050d4b24a2d0afacbf934113b0112.jpg'} 
+                alt="Profile" 
+                className='size-46 rounded-full object-cover border-2'
+                />
               </div>
-
-              {/* User Details */}
-              <div className="flex-1 space-y-4">
-                <div>
-                  <p className="text-sm text-gray-500 mb-1">Name</p>
-                  <p className="text-lg font-semibold text-white">{user.name}</p>
-                </div>
-
-                <div>
-                  <p className="text-sm text-gray-500 mb-1">Email</p>
-                  <p className="text-lg font-semibold text-white">{user.email}</p>
-                </div>
-
-                {user.bio && (
-                  <div>
-                    <p className="text-sm text-gray-500 mb-1">Bio</p>
-                    <p className="text-gray-300 badscript">{user.bio}</p>
-                  </div>
-                )}
-
-                {user.location?.city && (
-                  <div className="flex items-center gap-2 text-gray-300">
-                    <MapPin size={18} className="text-red-600" />
-                    <span>{user.location.city}</span>
-                    {user.location.address && (
-                      <span className="text-gray-500">• {user.location.address}</span>
-                    )}
-                  </div>
-                )}
-              </div>
+              <label
+              htmlFor='avatar-upload'
+              className='absolute  top-120 right-258 bg-gray-900 p-2 rounded-full cursor-pointer font-bold text-lg duration-300 hover:scale-105'>
+                <Camera className='size-8 text-gray-100'/>
+                <input
+                 type="file"
+                 id='avatar-upload'
+                 className='hidden'
+                 accept='image/*'
+                 onChange={handelImageUpload}
+                 disabled={updateProfilePic}
+                 />
+              </label>
+              {/* player Bio */}
+               <p className="text-white font-medium">Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae impedit amet, assumenda commodi eligendi maxime, delectus quisquam rem quas modi, repudiandae voluptates distinctio necessitati quidem.</p>
             </div>
           </div>
 
+          {/* Bio & Other Details */}
+          <div className="lg:col-span-2 bg-neutral-900 border border-neutral-800 rounded-2xl p-8">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold">Bio & other details</h3>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
+              {/* Left Column */}
+              <div className="space-y-6">
+                <div>
+                  <p className="text-gray-500 text-sm mb-1">Contact</p>
+                  <p className="text-white font-medium">Lorem ipsum dolor sit.</p>
+                </div>
+                
+                <div>
+                  <p className="text-gray-500 text-sm mb-1">Sports Selected</p>
+                  <p className="text-white font-medium">x,y,z</p>
+                </div>
+                
+                <div>
+                  <p className="text-gray-500 text-sm mb-1">My Preferred Sport</p>
+                  <p className="text-white font-medium">x</p>
+                </div>
+                
+                <div>
+                  <p className="text-gray-500 text-sm mb-1">Region</p>
+                  <p className="text-white font-medium flex items-center gap-2">
+                    <MapPin size={16} className="text-blue-500" />
+                    India
+                  </p>
+                </div>
+              </div>
+
+              {/* Right Column */}
+              <div className="space-y-6">
+                <div>
+                  <p className="text-gray-500 text-sm mb-1">My Skill Level</p>
+                  <p className="text-white font-medium">Advanced</p>
+                </div>
+                
+                <div>
+                  <p className="text-gray-500 text-sm mb-1">Player Rating</p>
+                  <p className="text-white font-medium">0.0</p>
+                </div>
+                
+                <div>
+                  <p className="text-gray-500 text-sm mb-1">Match Attended</p>
+                  <p className="text-white font-medium">5/8</p>
+                </div>
+                
+                <div>
+                  <p className="text-gray-500 text-sm mb-2">Availability</p>
+                  <span className="inline-flex items-center gap-2 bg-green-500/20 text-green-400 text-xs font-bold px-3 py-1.5 rounded-full">
+                    <span className="w-2 h-2 bg-green-400 rounded-full"></span>
+                    Available to Play
+                  </span>
+                </div>
+                
+              </div>
+                <button className="border border-red-800 text-white font-bold text-lg px-8 py-6 rounded-2xl shadow-lg transition-all duration-300 hover:scale-105">
+            CREATE GAMES
+          </button>
+            </div>
           {/* Stats Card */}
           <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-8">
             <h2 className="text-2xl font-bold text-white mb-6">Your Stats</h2>
@@ -186,67 +230,37 @@ export default function Dashboard() {
               </div>
             </div>
             </div>
+
           </div>
         </div>
-
-        {/* Sports Section */}
-        <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-8">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-              <Trophy className="text-red-600" size={28} />
-              Your Sports
-            </h2>
-            <button
-              onClick={() => navigate('/onboarding/step3')}
-              className="flex items-center gap-2 text-red-600 hover:text-red-500 font-semibold text-sm transition-colors"
-            >
-              <Edit size={18} />
-              Manage Sports
-            </button>
-          </div>
-
-          {user.sports && user.sports.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {user.sports.map((sport, index) => (
-                <div
-                  key={index}
-                  className="bg-black border border-neutral-800 rounded-lg p-6 hover:border-red-700 transition-all duration-300"
-                >
-                  <h3 className="text-xl font-bold text-white mb-2">{sport.name}</h3>
-                  <div className="space-y-2 text-sm">
-                    <p className="text-gray-400">
-                      <span className="text-gray-500">Skill:</span>{' '}
-                      <span className="font-semibold text-red-600">{sport.skillLevel}</span>
-                    </p>
-                    <p className="text-gray-400">
-                      <span className="text-gray-500">Rating:</span>{' '}
-                      <span className="font-semibold text-white">
-                        {sport.averageRating ? sport.averageRating.toFixed(1) : '0.0'} ⭐
-                      </span>
-                    </p>
-                    <p className="text-gray-400">
-                      <span className="text-gray-500">Games:</span>{' '}
-                      <span className="font-semibold text-white">{sport.gamesPlayed || 0}</span>
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <Trophy className="mx-auto text-gray-600 mb-4" size={48} />
-              <p className="text-gray-400 badscript mb-4">No sports added yet</p>
-              <button
-                onClick={() => navigate('/onboarding/step3')}
-                className="bg-red-700 hover:bg-red-800 text-white font-bold text-sm px-8 py-3 rounded-full transition-all duration-300 hover:scale-105"
-              >
-                Add Your First Sport
-              </button>
-            </div>
-          )}
         </div>
 
+        
+        {/* My Matches Table */}
+        <div className="mt-6 bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
+          <h3 className="text-lg font-bold mb-4">My Matches</h3>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-neutral-800">
+                  <th className="text-left text-gray-500 text-sm font-medium pb-3">Match Type</th>
+                  <th className="text-left text-gray-500 text-sm font-medium pb-3">Date</th>
+                  <th className="text-left text-gray-500 text-sm font-medium pb-3">Result</th>
+                  <th className="text-left text-gray-500 text-sm font-medium pb-3">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colSpan="4" className="pt-8 text-center text-gray-500">
+                    No matches played yet
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
         {/* Quick Actions */}
+      
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
           <button className="bg-red-700 hover:bg-red-800 text-white font-bold text-lg px-8 py-6 rounded-2xl shadow-lg hover:shadow-red-900/50 transition-all duration-300 hover:scale-105">
             FIND PLAYERS
@@ -256,6 +270,7 @@ export default function Dashboard() {
           className="bg-neutral-900 border-2 border-neutral-800 hover:border-red-700 text-white font-bold text-lg px-8 py-6 rounded-2xl transition-all duration-300 hover:scale-105">
             BROWSE GAMES  
           </button>
+           
         </div>
       </main>
     </div>
