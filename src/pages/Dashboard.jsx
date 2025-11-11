@@ -1,11 +1,12 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { MapPin, Trophy, Star, LogOut, User, Edit } from 'lucide-react';
+import { MapPin, Trophy, Star, LogOut, User, Edit, Camera } from 'lucide-react';
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { user, logout, loading } = useContext(AuthContext);
+  const { user, logout, loading, updateProfilePic,updateProfile } = useContext(AuthContext);
+  const [selectedImage, setSelectedImage] = useState(null)
 
   useEffect(() => {
     // Redirect to signin if not authenticated
@@ -31,6 +32,19 @@ export default function Dashboard() {
     return null;
   }
 
+  const handelImageUpload = async(e) => {
+    const file = e.target.files[0]
+    if(!file) return;
+
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+
+    reader.onload = async ()=>{
+      const base64Image = reader.result
+      setSelectedImage(base64Image)
+      await updateProfilePic({profilePic: base64Image})
+    }
+  }
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Header */}
@@ -77,9 +91,25 @@ export default function Dashboard() {
             <div className="text-center">
               <h2 className="text-2xl font-bold mb-1">{user.name || 'Unknown'}</h2>
               {/* Avatar */}
-              <div className="w-48 h-48 mx-auto mb-6 rounded-full bg-linear-to-br from-red-600 to-red-800 flex items-center justify-center overflow-hidden border-4 border-neutral-800">
-                <User size={96} className="text-white" />
+              <div className="w-48 h-48 mx-auto mb-6 rounded-full overflow-hidden border-4 border-neutral-800">
+                <img src={selectedImage || user.profilePic || 'https://i.pinimg.com/736x/fd/b0/50/fdb050d4b24a2d0afacbf934113b0112.jpg'} 
+                alt="Profile" 
+                className='size-46 rounded-full object-cover border-2'
+                />
               </div>
+              <label
+              htmlFor='avatar-upload'
+              className='absolute  top-120 right-258 bg-gray-900 p-2 rounded-full cursor-pointer font-bold text-lg duration-300 hover:scale-105'>
+                <Camera className='size-8 text-gray-100'/>
+                <input
+                 type="file"
+                 id='avatar-upload'
+                 className='hidden'
+                 accept='image/*'
+                 onChange={handelImageUpload}
+                 disabled={updateProfilePic}
+                 />
+              </label>
               {/* player Bio */}
                <p className="text-white font-medium">Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae impedit amet, assumenda commodi eligendi maxime, delectus quisquam rem quas modi, repudiandae voluptates distinctio necessitati quidem.</p>
             </div>
@@ -147,8 +177,62 @@ export default function Dashboard() {
             CREATE GAMES
           </button>
             </div>
+          {/* Stats Card */}
+          <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-8">
+            <h2 className="text-2xl font-bold text-white mb-6">Your Stats</h2>
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-red-700/20 rounded-full flex items-center justify-center">
+                    <Trophy className="text-red-600" size={24} />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Games Played</p>
+                    <p className="text-2xl font-bold text-white">{user.totalGamesPlayed || 0}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-red-700/20 rounded-full flex items-center justify-center">
+                    <Star className="text-red-600" size={24} />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Overall Rating</p>
+                    <p className="text-2xl font-bold text-white">
+                      {user.overallRating ? user.overallRating.toFixed(1) : '0.0'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="pt-4 border-t border-neutral-800">
+                
+                <p className="text-sm text-gray-500 mb-2">Availability</p>
+                <div className='space-y-3 text-sm font-bo'>
+                <div className='flex items-center justify-between py-3 border-b border-zinc-700/50'>
+                  <span className='text-gray-300'>Member Since</span>
+                  <span className='text-green-400'>{user?.createdAt?.split("T")[0]}</span>
+                </div>
+                <div  className='flex items-center justify-between'>
+                  <span className='text-gray-300'>Account Status</span>
+                <span className={`inline-block py-1 rounded-full text-sm ${
+                  user.availability === 'Available' 
+                    ? ' text-green-400 '
+                    : user.availability === 'Busy'
+                    ? 'bg-yellow-900/30 text-yellow-400 border border-yellow-700'
+                    : 'bg-red-900/30 text-red-400 border border-red-700'
+                }`}>
+                  {user.availability || 'Available'}
+                </span>
+                </div>
+              </div>
+            </div>
+            </div>
 
           </div>
+        </div>
         </div>
 
         
@@ -181,8 +265,10 @@ export default function Dashboard() {
           <button className="bg-red-700 hover:bg-red-800 text-white font-bold text-lg px-8 py-6 rounded-2xl shadow-lg hover:shadow-red-900/50 transition-all duration-300 hover:scale-105">
             FIND PLAYERS
           </button>
-          <button className="bg-neutral-900 border-2 border-neutral-800 hover:border-red-700 text-white font-bold text-lg px-8 py-6 rounded-2xl transition-all duration-300 hover:scale-105">
-            BROWSE GAMES
+          <button 
+          onClick={()=>navigate('/sports')}
+          className="bg-neutral-900 border-2 border-neutral-800 hover:border-red-700 text-white font-bold text-lg px-8 py-6 rounded-2xl transition-all duration-300 hover:scale-105">
+            BROWSE GAMES  
           </button>
            
         </div>
