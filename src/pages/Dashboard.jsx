@@ -119,55 +119,11 @@ const StatsCard = ({ user }) => {
     user?.createdAt?.split("T")[0] || 'N/A',
     [user?.createdAt]
   );
-
-  return (
-    <div className="lg:col-span-1 bg-neutral-900 border border-neutral-800 rounded-2xl p-8">
-      <h2 className="text-2xl font-bold text-white mb-6">Your Stats</h2>
-      <div className="space-y-6">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 bg-red-700/20 rounded-full flex items-center justify-center">
-            <Trophy className="text-red-600" size={24} />
-          </div>
-          <div>
-            <p className="text-sm text-gray-500">Games Played</p>
-            <p className="text-2xl font-bold text-white">{user.totalGamesPlayed || 0}</p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 bg-red-700/20 rounded-full flex items-center justify-center">
-            <Star className="text-red-600" size={24} />
-          </div>
-          <div>
-            <p className="text-sm text-gray-500">Overall Rating</p>
-            <p className="text-2xl font-bold text-white">
-              {user.overallRating ? user.overallRating.toFixed(1) : '0.0'}
-            </p>
-          </div>
-        </div>
-        
-        <div className="pt-4 border-t border-neutral-800">
-          <p className="text-sm text-gray-500 mb-2">Availability</p>
-          <div className="space-y-3 text-sm">
-            <div className="flex items-center justify-between py-3 border-b border-zinc-700/50">
-              <span className="text-gray-300">Member Since</span>
-              <span className="text-green-400">{memberSince}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-gray-300">Account Status</span>
-              <span className={availabilityColor}>
-                {user.availability || 'Available'}
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+ 
 };
 
 const MatchesTable = () => (
-  <div className="lg:col-span-2 bg-neutral-900 border border-neutral-800 rounded-2xl p-8">
+  <div className="lg:col-span-4 bg-neutral-900 border border-neutral-800 rounded-2xl p-8">
     <h3 className="text-2xl font-bold text-white mb-6">My Matches</h3>
     <div className="overflow-x-auto">
       <table className="w-full">
