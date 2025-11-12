@@ -243,7 +243,7 @@ export default function CreateGames() {
                   )}
                 </div>
 
-                {/* City as Free Text Input */}
+                {/* City */}
                 <div>
                   <label className="block text-gray-300 mb-2 text-sm font-medium">
                     City *
