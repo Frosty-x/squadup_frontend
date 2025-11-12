@@ -1,6 +1,7 @@
 import { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+
 import { MapPin, Trophy, Star, LogOut, User, Edit } from 'lucide-react';
 
 export default function Dashboard() {
