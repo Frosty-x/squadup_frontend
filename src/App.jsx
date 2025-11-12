@@ -4,6 +4,7 @@ import SignUpPage from './pages/SignUpPage';
 import SignInPage from './pages/SignInPage';
 import Dashboard from './pages/Dashboard';
 import OnboardingLayout from './components/onboarding/OnboardingLayout';
+import BrowseGames from './Games/BrowseGames';
 
 function App() {
   return (
@@ -15,7 +16,10 @@ function App() {
       
       {/* Onboarding Routes */}
       <Route path="/onboarding/*" element={<OnboardingLayout />} />
-      
+
+      {/*Sports page */}
+      <Route path='/sports' element={<BrowseGames/>}/>
+
       {/* Dashboard */}
       <Route path="/dashboard" element={<Dashboard />} />
             

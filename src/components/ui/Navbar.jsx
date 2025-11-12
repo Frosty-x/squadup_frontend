@@ -12,7 +12,7 @@ export default function Navbar() {
 
   const NAV_ITEMS = [
     { name: "HOME", href: "/" },
-    { name: "GAMES", href: "/games" },
+    { name: "GAMES", href: "/sport" },
     { name: "PLAYERS", href: "/players" },
     { name: "ABOUT", href: "/about" },
   ];

@@ -62,6 +62,26 @@ export const AuthProvider = ({ children }) => {
         authService.logout();
         setUser(null);
     };
+    const updateProfilePic = async(newprofilePic) => {
+        try {
+        const response = await authService.updateProfilePic(newprofilePic)
+         setUser(response.data)
+         return response
+        } catch (error) {
+            console.error('Failed to update Priofile pic',error);
+            throw error
+        }
+    }
+    const updateProfile = async(newProfileData) => {
+        try {
+            const response = await authService.updateProfile(newProfileData)
+            setUser (response.data)
+            return response
+        } catch (error) {
+            console.error('Failed to update Users Information',error);
+            throw error
+        }
+    }
 
     const value = {
         user,
@@ -70,6 +90,8 @@ export const AuthProvider = ({ children }) => {
         login,
         logout,
         refreshUser,
+        updateProfilePic,
+        updateProfile,
         isAuthenticated: !!user,
     };
 
