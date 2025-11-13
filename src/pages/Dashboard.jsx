@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { MapPin, Trophy, Star, LogOut, Camera } from 'lucide-react';
+import { MapPin, Trophy, Star, LogOut, Camera, Pencil } from 'lucide-react';
 
 const Header = ({ onLogout, onLogoClick }) => (
   <header className="border-b border-neutral-800 bg-neutral-900/50 backdrop-blur-xl">
@@ -74,6 +74,9 @@ const BioSection = ({ user, onNavigate }) => (
   <div className="lg:col-span-2 bg-neutral-900 border border-neutral-800 rounded-2xl p-8">
     <div className="flex items-center justify-between mb-6">
       <h3 className="text-xl font-bold">Bio & other details</h3>
+      <div className='flex items-center'>
+        <Pencil className='size-4 '/>
+      </div>
     </div>
     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
       <div className="space-y-6">

@@ -1,14 +1,14 @@
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User, ChevronRight } from 'lucide-react';
+import { ChevronRight, Camera } from 'lucide-react';
 import { AuthContext } from '../../context/AuthContext';
 import api from '../../services/api';
 
 export default function Step1ProfileBasics() {
   const navigate = useNavigate();
-  const { user, refreshUser } = useContext(AuthContext);
+  const { user, refreshUser,updateProfilePic, updateProfile } = useContext(AuthContext);
   
-  const [profilePic, setProfilePic] = useState(user?.profilePic || '');
+  const [profilePic, setProfilePic] = useState(user?.profilePic || ''); 
   const [bio, setBio] = useState(user?.bio || '');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -65,18 +65,23 @@ export default function Step1ProfileBasics() {
           
           {/* Profile Preview */}
           <div className="w-32 h-32 rounded-full bg-neutral-800 border-4 border-red-700 overflow-hidden">
-            {profilePic ? (
               <img
-                src={profilePic}
+                src={ 'https://i.pinimg.com/736x/fd/b0/50/fdb050d4b24a2d0afacbf934113b0112.jpg'}
                 alt="Profile"
                 className="w-full h-full object-cover"
               />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <User className="text-gray-500" size={48} />
-              </div>
-            )}
           </div>
+            <label 
+            className=''
+            htmlFor="avatar-upload">
+              <Camera className='text-white'/>
+              <input 
+              type="file"  
+              id="avatar-upload" 
+              accept='image/*'
+              className='hidden'
+              />
+            </label>
 
           {/* Upload Info */}
           <p className="text-gray-400 text-sm text-center badscript">
