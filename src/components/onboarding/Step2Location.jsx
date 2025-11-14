@@ -6,7 +6,7 @@ import api from '../../services/api';
 
 export default function Step2Location() {
   const navigate = useNavigate();
-  const { user, refreshUser } = useContext(AuthContext);
+  const { user, refreshUser,updateProfile } = useContext(AuthContext);
   
   const [city, setCity] = useState(user?.location?.city || '');
   const [address, setAddress] = useState(user?.location?.address || '');
@@ -22,12 +22,12 @@ export default function Step2Location() {
     setError('');
 
     try {
-      await api.put('/user/profile/update', {
+      await updateProfile({
         location: {
           city: city.trim() || undefined,
           address: address.trim() || undefined
         }
-      });
+      })
 
       await refreshUser();
       navigate('/onboarding/step3');

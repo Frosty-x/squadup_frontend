@@ -8,7 +8,7 @@ export default function Step1ProfileBasics() {
   const navigate = useNavigate();
   const { user, refreshUser,updateProfilePic, updateProfile } = useContext(AuthContext);
   
-  const [profilePic, setProfilePic] = useState(user?.profilePic || ''); 
+  const [selectedImage,setSelectedImage] = useState(null); 
   const [bio, setBio] = useState(user?.bio || '');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -16,25 +16,46 @@ export default function Step1ProfileBasics() {
   const handleSkip = () => {
     navigate('/onboarding/step2');
   };
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="w-16 h-16 border-4 border-red-700 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+    if(!user) {
+      return null
+    }
 
   const handleNext = async () => {
     setLoading(true);
     setError('');
 
     try {                                           //caution under working
-      await api.put('/user/profile/update', {
-        bio: bio.trim() || undefined,
-        profilePic: profilePic || undefined
-      }); 
+      await updateProfile({bio: bio.trim()})
 
       await refreshUser();
       navigate('/onboarding/step2');
     } catch (err) {
-      setError('Failed to update profile. Please try again.',err);
+      setError('Failed to update profile. Please try again.');
     } finally {
       setLoading(false);
     }
   };
+  const handelImageupload = (e) => {
+      const file = e.target.files[0]
+      if(!file) return
+
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    
+    reader.onload = async () => {
+      const base64Image = reader.result
+      setSelectedImage(base64Image)
+      await updateProfilePic({profilePic: base64Image})
+    }
+    }
 
   return (
     <div className="space-y-8">
@@ -64,22 +85,25 @@ export default function Step1ProfileBasics() {
         <div className="flex flex-col items-center gap-6">
           
           {/* Profile Preview */}
-          <div className="w-32 h-32 rounded-full bg-neutral-800 border-4 border-red-700 overflow-hidden">
+          <div className="w-40 h-40 rounded-full bg-neutral-800 border-4 border-gray-200 overflow-hidden">
               <img
-                src={ 'https://i.pinimg.com/736x/fd/b0/50/fdb050d4b24a2d0afacbf934113b0112.jpg'}
+                src={selectedImage || user.profilePic || 'https://i.pinimg.com/736x/fd/b0/50/fdb050d4b24a2d0afacbf934113b0112.jpg'}
                 alt="Profile"
                 className="w-full h-full object-cover"
               />
           </div>
             <label 
-            className=''
+            className='absolute ml-30 mt-30 bg-gray-900 rounded-full p-1 cursor-pointer duration-300 hover:scale-105'
             htmlFor="avatar-upload">
-              <Camera className='text-white'/>
+              <Camera className='text-white '/>
               <input 
               type="file"  
               id="avatar-upload" 
               accept='image/*'
               className='hidden'
+              onChange={handelImageupload}
+              disabled={loading}
+
               />
             </label>
 
