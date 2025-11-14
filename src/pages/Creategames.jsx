@@ -1,94 +1,36 @@
-import React, { useState, useCallback } from "react";
+import React from "react";
 import { MapPin, Calendar, Trophy, Users } from "lucide-react";
 
 export default function CreateGames() {
-  const [formData, setFormData] = useState({
-    title: "",
-    sport: "",
-    description: "",
-    date: "",
-    duration: 60,
-    venueName: "",
-    address: "",
-    city: "", 
-    playersNeeded: 4
-  });
-
-  const [errors, setErrors] = useState({});
-
-  const sports = [
-    "Football", "Basketball", "Cricket",
-    "Volleyball", "Badminton"
-  ];
-
-  const handleChange = useCallback((field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: "" }));
-    }
-  }, [errors]);
-
-  const validateForm = () => {
-    const newErrors = {};
-
-    if (!formData.title.trim()) newErrors.title = "Game title is required";
-    if (!formData.sport) newErrors.sport = "Please select a sport";
-    if (!formData.date) {
-      newErrors.date = "Date and time are required";
-    } else if (new Date(formData.date) < new Date()) {
-      newErrors.date = "Date must be in the future";
-    }
-    if (!formData.address.trim()) newErrors.address = "Address is required";
-    if (!formData.city.trim()) newErrors.city = "City is required";
-    if (formData.playersNeeded < 2) newErrors.playersNeeded = "At least 2 players needed";
-    if (formData.description.length > 500) newErrors.description = "Description must be under 500 characters";
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleCreateGame = () => {
-    if (!validateForm()) return;
-
-    const gameData = {
-      ...formData,
-      duration: parseInt(formData.duration, 10),
-      playersNeeded: parseInt(formData.playersNeeded, 10)
-    };
-
-    console.log("Creating game:", gameData);
-    alert(
-      `Game Session Created!\n\n` +
-      `Title: ${gameData.title}\n` +
-      `Sport: ${gameData.sport}\n` +
-      `Players Needed: ${gameData.playersNeeded}\n` +
-      `Duration: ${gameData.duration} minutes\n` +
-      `Date: ${new Date(gameData.date).toLocaleString()}\n` +
-      `Location: ${gameData.venueName || 'TBD'}, ${gameData.address}, ${gameData.city}`
-    );
-  };
+  const sports = ["Football", "Basketball", "Cricket", "Volleyball", "Badminton"];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral-950 via-black to-red-950/20 text-white px-6 py-16">
-      <div className="max-w-6xl mx-auto space-y-12">
+    <div className="min-h-screen bg-black text-white px-6 py-16 relative overflow-hidden">
+      {/* Subtle Background Glow */}
+      <div className="absolute inset-0">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-red-500/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-24 right-16 w-96 h-96 bg-red-800/10 rounded-full blur-3xl"></div>
+      </div>
+
+      <div className="max-w-6xl mx-auto space-y-12 relative z-10">
         {/* Header */}
         <div className="text-center space-y-2">
-          <h1 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-red-400 via-red-500 to-pink-500 bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-red-500 via-orange-500 to-yellow-400 bg-clip-text text-transparent">
             Create Your Game Session
           </h1>
-          <p className="text-gray-400 text-lg">
-            Set up your game, pick your sport, and find teammates
+          <p className="text-gray-400 text-base md:text-lg font-light">
+            Set up your session, define the details, and invite players
           </p>
         </div>
 
         {/* Layout */}
         <div className="grid md:grid-cols-[2fr,1fr] gap-10">
-          {/* Left Panel - Form */}
+          {/* Left Panel */}
           <div className="space-y-6">
-            {/* Game Details Section */}
-            <div className="bg-neutral-900/80 backdrop-blur-xl border border-red-800/40 rounded-2xl p-8 transition-all duration-300">
+            {/* Game Details */}
+            <div className="bg-neutral-900/80 border border-red-700/30 rounded-2xl p-8 shadow-xl shadow-red-900/30">
               <h2 className="text-xl font-semibold text-red-400 mb-6 flex items-center gap-2">
-                <Trophy size={24} />
+                <Trophy size={22} className="text-red-500" />
                 Game Details
               </h2>
 
@@ -99,14 +41,9 @@ export default function CreateGames() {
                 </label>
                 <input
                   type="text"
-                  value={formData.title}
-                  onChange={(e) => handleChange("title", e.target.value)}
-                  placeholder="e.g., Saturday Football"
-                  className="w-full bg-black/60 border border-gray-700/50 rounded-lg text-white px-4 py-3 focus:outline-none focus:border-red-500 transition-all duration-300 placeholder-gray-500"
+                  placeholder="e.g., Weekend Football Match"
+                  className="w-full bg-black/60 border border-red-700/30 rounded-lg text-white px-4 py-3 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-600/30 placeholder-gray-500 transition-all"
                 />
-                {errors.title && (
-                  <p className="text-red-400 text-xs mt-1">{errors.title}</p>
-                )}
               </div>
 
               {/* Sport Selection */}
@@ -117,72 +54,48 @@ export default function CreateGames() {
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                   {sports.map((sport) => (
                     <button
-                      type="button"
                       key={sport}
-                      onClick={() => handleChange("sport", sport)}
-                      className={`py-2.5 rounded-lg font-medium text-sm transition-all duration-300 ${
-                        formData.sport === sport
-                          ? "bg-gradient-to-r from-red-600 to-pink-600 text-white scale-[1.04]"
-                          : "bg-neutral-800 text-gray-300 hover:bg-neutral-700 hover:text-white hover:scale-[1.02]"
-                      }`}
+                      type="button"
+                      className="py-2.5 rounded-lg font-medium text-sm bg-neutral-800 text-gray-300 border border-red-800/30 hover:bg-red-700/80 hover:border-red-600/50 hover:text-white transition-all duration-300"
                     >
                       {sport}
                     </button>
                   ))}
                 </div>
-                {errors.sport && (
-                  <p className="text-red-400 text-xs mt-1">{errors.sport}</p>
-                )}
               </div>
 
               {/* Description */}
               <div>
                 <label className="block text-gray-300 mb-2 text-sm font-medium">
-                  Description <span className="text-gray-500">(optional, max 500 chars)</span>
+                  Description <span className="text-gray-500">(optional)</span>
                 </label>
                 <textarea
-                  value={formData.description}
-                  onChange={(e) => handleChange("description", e.target.value)}
-                  placeholder="Tell players what to expect..."
+                  placeholder="Provide a brief description or rules..."
                   rows="3"
                   maxLength="500"
-                  className="w-full bg-black/60 border border-gray-700/50 rounded-lg text-white px-4 py-3 focus:outline-none focus:border-red-500 transition-all duration-300 placeholder-gray-500 resize-none"
-                />
-                <div className="flex justify-between items-center mt-1">
-                  {errors.description && (
-                    <p className="text-red-400 text-xs">{errors.description}</p>
-                  )}
-                  <p className="text-gray-500 text-xs ml-auto">
-                    {formData.description.length}/500
-                  </p>
-                </div>
+                  className="w-full bg-black/60 border border-red-700/30 rounded-lg text-white px-4 py-3 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-600/30 placeholder-gray-500 resize-none transition-all"
+                ></textarea>
+                <p className="text-gray-500 text-xs mt-1 text-right">0/500</p>
               </div>
             </div>
 
-            {/* Date & Duration */}
-            <div className="bg-neutral-900/80 backdrop-blur-xl border border-red-800/40 rounded-2xl p-8 transition-all duration-300">
+            {/* Schedule */}
+            <div className="bg-neutral-900/80 border border-red-700/30 rounded-2xl p-8 shadow-xl shadow-red-900/30">
               <h2 className="text-xl font-semibold text-red-400 mb-6 flex items-center gap-2">
-                <Calendar size={24} />
+                <Calendar size={22} className="text-red-500" />
                 Schedule
               </h2>
               <div className="grid sm:grid-cols-2 gap-5">
-                {/* Date & Time */}
                 <div>
                   <label className="block text-gray-300 mb-2 text-sm font-medium">
                     Date & Time *
                   </label>
                   <input
                     type="datetime-local"
-                    value={formData.date}
-                    onChange={(e) => handleChange("date", e.target.value)}
-                    className="w-full bg-black/60 border border-gray-700/50 rounded-lg text-white px-4 py-3 focus:outline-none focus:border-red-500 transition-all duration-300"
+                    className="w-full bg-black/60 border border-red-700/30 rounded-lg text-white px-4 py-3 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-600/30 transition-all"
                   />
-                  {errors.date && (
-                    <p className="text-red-400 text-xs mt-1">{errors.date}</p>
-                  )}
                 </div>
 
-                {/* Duration */}
                 <div>
                   <label className="block text-gray-300 mb-2 text-sm font-medium">
                     Duration (minutes)
@@ -193,12 +106,10 @@ export default function CreateGames() {
                       min="30"
                       max="180"
                       step="15"
-                      value={formData.duration}
-                      onChange={(e) => handleChange("duration", e.target.value)}
-                      className="flex-1 accent-red-500 cursor-pointer"
+                      className="flex-1 accent-red-600 cursor-pointer"
                     />
-                    <span className="text-red-400 font-bold text-lg min-w-[60px] text-center">
-                      {formData.duration} min
+                    <span className="text-red-400 font-semibold text-lg min-w-[60px] text-center">
+                      60 min
                     </span>
                   </div>
                 </div>
@@ -206,58 +117,43 @@ export default function CreateGames() {
             </div>
 
             {/* Location */}
-            <div className="bg-neutral-900/80 backdrop-blur-xl border border-red-800/40 rounded-2xl p-8 transition-all duration-300">
+            <div className="bg-neutral-900/80 border border-red-700/30 rounded-2xl p-8 shadow-xl shadow-red-900/30">
               <h2 className="text-xl font-semibold text-red-400 mb-6 flex items-center gap-2">
-                <MapPin size={24} />
+                <MapPin size={22} className="text-red-500" />
                 Location
               </h2>
               <div className="space-y-5">
-                {/* Venue Name */}
                 <div>
                   <label className="block text-gray-300 mb-2 text-sm font-medium">
                     Venue Name <span className="text-gray-500">(optional)</span>
                   </label>
                   <input
                     type="text"
-                    value={formData.venueName}
-                    onChange={(e) => handleChange("venueName", e.target.value)}
-                    placeholder="e.g., Central Park"
-                    className="w-full bg-black/60 border border-gray-700/50 rounded-lg text-white px-4 py-3 focus:outline-none focus:border-red-500 transition-all duration-300 placeholder-gray-500"
+                    placeholder="e.g.,Central Sports Ground"
+                    className="w-full bg-black/60 border border-red-700/30 rounded-lg text-white px-4 py-3 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-600/30 placeholder-gray-500 transition-all"
                   />
                 </div>
 
-                {/* Address */}
                 <div>
                   <label className="block text-gray-300 mb-2 text-sm font-medium">
                     Address *
                   </label>
                   <input
                     type="text"
-                    value={formData.address}
-                    onChange={(e) => handleChange("address", e.target.value)}
-                    placeholder="Street address or landmark"
-                    className="w-full bg-black/60 border border-gray-700/50 rounded-lg text-white px-4 py-3 focus:outline-none focus:border-red-500 transition-all duration-300 placeholder-gray-500"
+                    placeholder="Street or landmark"
+                    className="w-full bg-black/60 border border-red-700/30 rounded-lg text-white px-4 py-3 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-600/30 placeholder-gray-500 transition-all"
                   />
-                  {errors.address && (
-                    <p className="text-red-400 text-xs mt-1">{errors.address}</p>
-                  )}
                 </div>
 
-                {/* City */}
                 <div>
                   <label className="block text-gray-300 mb-2 text-sm font-medium">
                     City *
                   </label>
                   <input
                     type="text"
-                    value={formData.city}
-                    onChange={(e) => handleChange("city", e.target.value)}
                     placeholder="Enter city name"
-                    className="w-full bg-black/60 border border-gray-700/50 rounded-lg text-white px-4 py-3 focus:outline-none focus:border-red-500 transition-all duration-300"
+                    className="w-full bg-black/60 border border-red-700/30 rounded-lg text-white px-4 py-3 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-600/30 transition-all"
                   />
-                  {errors.city && (
-                    <p className="text-red-400 text-xs mt-1">{errors.city}</p>
-                  )}
                 </div>
               </div>
             </div>
@@ -266,58 +162,46 @@ export default function CreateGames() {
             <div className="mb-8">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-gray-300 text-sm">Number of Players</span>
-                <span className="text-red-400 font-bold text-2xl">
-                  {formData.playersNeeded}
-                </span>
+                <span className="text-red-400 font-semibold text-xl">4</span>
               </div>
               <input
                 type="range"
                 min="2"
                 max="20"
-                value={formData.playersNeeded}
-                onChange={(e) => handleChange("playersNeeded", parseInt(e.target.value, 10))}
-                className="w-full accent-red-500 cursor-pointer "
+                className="w-full accent-red-600 cursor-pointer"
               />
-              {errors.playersNeeded && (
-                <p className="text-red-400 text-xs mt-1">{errors.playersNeeded}</p>
-              )}
             </div>
 
             {/* Create Button */}
-            <button
-              onClick={handleCreateGame}
-              className="w-full bg-red-700 text-white font-semibold py-4 rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 shadow-lg shadow-red-900/50"
-            >
+            <button className="w-full bg-linear-to-r from-red-700 via-red-600 to-orange-600 text-white font-medium py-4 rounded-xl hover:opacity-90 active:scale-[0.99] transition-all duration-300 shadow-md shadow-red-900/40">
               Create Game Session
             </button>
           </div>
 
-          {/* Right Panel - Players Info */}
+          {/* Right Panel */}
           <div>
-            <div className="bg-neutral-900/80 backdrop-blur-xl border border-red-800/40 rounded-2xl p-8 transition-all duration-300 sticky top-6">
+            <div className="bg-neutral-900/80 border border-red-700/30 rounded-2xl p-8 shadow-xl shadow-red-900/30 sticky top-6">
               <h2 className="text-xl font-semibold text-red-400 mb-6 flex items-center gap-2">
-                <Users size={24} />
-                All Information
+                <Users size={22} className="text-red-500" />
+                Session Summary
               </h2>
-              {/* Summary */}
-              <div className="mt-8 pt-6 border-t border-red-800/40">
-                <h3 className="text-sm font-semibold text-gray-400 mb-3">Session Summary</h3>
-                <div className="space-y-2 text-sm">
+              <div className="mt-6 pt-4 border-t border-red-700/30">
+                <div className="space-y-3 text-sm">
                   <div className="flex justify-between">
                     <span className="text-gray-400">Sport</span>
-                    <span className="text-white font-medium">{formData.sport || "-"}</span>
+                    <span className="text-white font-medium">-</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-400">Duration</span>
-                    <span className="text-white font-medium">{formData.duration} min</span>
+                    <span className="text-white font-medium">60 min</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-400">Players</span>
-                    <span className="text-white font-medium">{formData.playersNeeded}</span>
+                    <span className="text-white font-medium">4</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-400">Location</span>
-                    <span className="text-white font-medium">{formData.city || "-"}</span>
+                    <span className="text-white font-medium">-</span>
                   </div>
                 </div>
               </div>
