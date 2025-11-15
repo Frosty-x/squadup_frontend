@@ -20,6 +20,7 @@ export default function BrowseGame() {
             <option value="football">Football</option>
             <option value="cricket">Cricket</option>
             <option value="badminton">Badminton</option>
+            <option value="vollyball">Vollyball</option>
           </select>
 
           <select className="border border-gray-300 rounded-lg px-3 py-2 text-gray-800 bg-white">
