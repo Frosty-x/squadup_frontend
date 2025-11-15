@@ -5,7 +5,7 @@ import { AuthContext } from '../context/AuthContext';
 
 export default function SignInPage() {
   const navigate = useNavigate();
-  const { login } = useContext(AuthContext);
+  const { login,refreshUser } = useContext(AuthContext);
   
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
@@ -54,9 +54,11 @@ export default function SignInPage() {
         password: formData.password
       });
 
+      const updatedUser = await refreshUser()
+
       // Check if user needs to complete onboarding
-      if (!user.sports || user.sports.length === 0 || !user.location?.city) {
-        navigate('/onboarding/step1');
+      if (!updatedUser.sports?.length || !updatedUser.location?.city) {
+        navigate('/');
       } else {
         navigate('/dashboard');
       }
