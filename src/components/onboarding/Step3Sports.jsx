@@ -2,7 +2,6 @@ import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Plus, X, Trophy, ChevronRight, Edit3, Save } from "lucide-react";
 import { AuthContext } from "../../context/AuthContext";
-import api from "../../services/api";
 
 const SKILL_LEVELS = ["Beginner", "Intermediate", "Advanced", "Professional"];
 
@@ -17,7 +16,7 @@ const POPULAR_SPORTS = [
 
 export default function Step3Sports() {
   const navigate = useNavigate();
-  const { user, refreshUser } = useContext(AuthContext);
+  const { user, refreshUser ,updateProfile} = useContext(AuthContext);
 
   const [sports, setSports] = useState(user?.sports || []);
   const [newSportName, setNewSportName] = useState("");
@@ -80,11 +79,14 @@ export default function Step3Sports() {
     setError("");
 
     try {
-      await api.put("/user/profile/update", { sports });
+      await updateProfile( { sports });
       await refreshUser();
       navigate("/dashboard");
+
     } catch (err) {
+      console.log(err);
       setError("Failed to update sports. Please try again.");
+
     } finally {
       setLoading(false);
     }

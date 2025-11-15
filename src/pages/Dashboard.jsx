@@ -5,7 +5,7 @@ import { MapPin, Trophy, Star, LogOut, User, Edit, Camera, Pencil, Underline } f
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { user, logout, loading, updateProfilePic,updateProfile } = useContext(AuthContext);
+  const { user, logout, loading } = useContext(AuthContext);
 
   useEffect(() => {
     // Redirect to signin if not authenticated
@@ -104,22 +104,26 @@ export default function Dashboard() {
               <div className="space-y-6">
                 <div>
                   <p className="text-gray-500 text-sm mb-1">Contact</p>
-                  <p className="text-white font-medium">{user.email}</p>
+                  <p className="text-white font-extralight">{user.email}</p>
                 </div>
                 
                 <div>
                   <p className="text-gray-500 text-sm mb-1">Sports Selected</p>
-                  <p className="text-white font-medium">Cricket</p>
+                  <p className="text-white font-extralight">
+                    {user.sports && user.sports.length > 0
+                      ? user.sports.map(s => s.name).join(", ")
+                      : "No sports selected"}
+                  </p>  
                 </div>
                 
                 <div>
                   <p className="text-gray-500 text-sm mb-1">My Preferred Sport</p>
-                  <p className="text-white font-medium">{user.city}</p>
+                  <p className="text-white font-extralight">{user.location.city || "No City Selected"}</p>
                 </div>
                 
                 <div>
                   <p className="text-gray-500 text-sm mb-1">Region</p>
-                  <p className="text-white font-medium flex items-center gap-2">
+                  <p className="text-white font-medium flex items-center gap-1">
                     <MapPin size={16} className="text-blue-500" />
                     India
                   </p>
@@ -130,7 +134,12 @@ export default function Dashboard() {
               <div className="space-y-6">
                 <div>
                   <p className="text-gray-500 text-sm mb-1">My Skill Level</p>
-                  <p className="text-white font-medium">Advanced</p>
+                 <p className="text-white font-extralight">
+                    {user.sports && user.sports.length > 0
+                      ? user.sports.map(sport => `${sport.skillLevel}`).join(", ")
+                      : "Not selected"}
+                  </p>
+
                 </div>
                 
                 <div>

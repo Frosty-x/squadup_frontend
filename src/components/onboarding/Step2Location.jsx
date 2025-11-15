@@ -2,7 +2,6 @@ import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MapPin, ChevronRight } from 'lucide-react';
 import { AuthContext } from '../../context/AuthContext';
-import api from '../../services/api';
 
 export default function Step2Location() {
   const navigate = useNavigate();
@@ -16,6 +15,16 @@ export default function Step2Location() {
   const handleSkip = () => {
     navigate('/onboarding/step3');
   };
+    if (loading) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="w-16 h-16 border-4 border-red-700 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+  if(!user){
+    return null
+  }
 
   const handleNext = async () => {
     setLoading(true);
@@ -28,11 +37,13 @@ export default function Step2Location() {
           address: address.trim() || undefined
         }
       })
-
       await refreshUser();
       navigate('/onboarding/step3');
+
     } catch (err) {
-      setError('Failed to update location. Please try again.',err);
+      console.log(err);
+      setError('Failed to update location. Please try again.');
+      
     } finally {
       setLoading(false);
     }
