@@ -1,18 +1,34 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate,Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { MapPin, Trophy, Star, LogOut, User, Edit, Camera, Pencil, Underline } from 'lucide-react';
+import { MapPin, LogOut, Pencil } from 'lucide-react';
+import gameService from '../services/gameService';
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const { user, logout, loading } = useContext(AuthContext);
+  const [myGames, setMyGames] = useState([])
 
   useEffect(() => {
-    // Redirect to signin if not authenticated
-    if (!loading && !user) {
+  if (!loading) {
+    if (!user) {
       navigate('/signin');
+    } else {
+      loadGames();   // load your games when the user exists
     }
-  }, [user, loading, navigate]);
+  }
+}, [user, loading, navigate]);
+
+  const loadGames = async()=>{
+    try {
+      const response = await gameService.getMyGames()
+      setMyGames(response)
+      
+    } catch (error) {
+      console.log("Error loading Games",error);
+      
+    }
+  }
 
   const handleLogout = () => {
     logout();
@@ -153,73 +169,23 @@ export default function Dashboard() {
                 </div>
 
                 <div>
-                  <p className="text-gray-500 text-sm mb-2">Availability</p>
-                  <span className="inline-flex items-center gap-2 bg-green-500/20 text-green-400 text-xs font-bold px-3 py-1.5 rounded-full">
+                  <p className="text-gray-500 text-sm mb-2 border-b border-neutral-700">Availability</p>
+                   <span className="text-gray-500 text-sm">
+                    Member Since : {user?.createdAt?.split("T")[0]} 
+                  </span><br />
+                  <span className="inline-flex items-center gap-2 bg-green-500/20 text-green-400 text-xs font-bold px-3 py-1.5 rounded-full mt-2">
                     <span className="w-2 h-2 bg-green-400 rounded-full"></span>
                     Available to Play
                   </span>
                 </div>
 
               </div>
-              <Link to="/creategame">
-                <button className="border border-red-800 text-white font-bold text-lg px-8 py-6 rounded-2xl shadow-lg transition-all duration-300 hover:scale-105">
+             <Link to="/creategame">
+                <button className="cursor-pointer border border-red-900 text-white font-bold text-lg px-10 py-4 rounded-2xl shadow-lg transition-all duration-300 hover:scale-105">
                   CREATE GAMES
                 </button>
               </Link>
 
-            </div>
-            {/* Stats Card */}
-            <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-8">
-              <h2 className="text-2xl font-bold text-white mb-6">Your Stats</h2>
-              <div className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-red-700/20 rounded-full flex items-center justify-center">
-                      <Trophy className="text-red-600" size={24} />
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Games Played</p>
-                      <p className="text-2xl font-bold text-white">{user.totalGamesPlayed || 0}</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-red-700/20 rounded-full flex items-center justify-center">
-                      <Star className="text-red-600" size={24} />
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Overall Rating</p>
-                      <p className="text-2xl font-bold text-white">
-                        {user.overallRating ? user.overallRating.toFixed(1) : '0.0'}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="pt-4 border-t border-neutral-800">
-
-                  <p className="text-sm text-gray-500 mb-2">Availability</p>
-                  <div className='space-y-3 text-sm font-bo'>
-                    <div className='flex items-center justify-between py-3 border-b border-zinc-700/50'>
-                      <span className='text-gray-300'>Member Since</span>
-                      <span className='text-green-400'>{user?.createdAt?.split("T")[0]}</span>
-                    </div>
-                    <div className='flex items-center justify-between'>
-                      <span className='text-gray-300'>Account Status</span>
-                      <span className={`inline-block py-1 rounded-full text-sm ${user.availability === 'Available'
-                        ? ' text-green-400 '
-                        : user.availability === 'Busy'
-                          ? 'bg-yellow-900/30 text-yellow-400 border border-yellow-700'
-                          : 'bg-red-900/30 text-red-400 border border-red-700'
-                        }`}>
-                        {user.availability || 'Available'}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
 
             </div>
           </div>
@@ -228,23 +194,38 @@ export default function Dashboard() {
 
         {/* My Matches Table */}
         <div className="mt-6 bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
-          <h3 className="text-lg font-bold mb-4">My Matches</h3>
+          <h3 className="text-lg font-bold mb-4">My Games</h3>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-neutral-800">
-                  <th className="text-left text-gray-500 text-sm font-medium pb-3">Match Type</th>
-                  <th className="text-left text-gray-500 text-sm font-medium pb-3">Date</th>
-                  <th className="text-left text-gray-500 text-sm font-medium pb-3">Result</th>
-                  <th className="text-left text-gray-500 text-sm font-medium pb-3">Actions</th>
+                  <th className="text-left text-gray-500 text-sm font-medium pb-3">Match Name</th>
+                  <th className="text-left text-gray-500 text-sm font-medium pb-3">Duration</th>
+                  <th className="text-left text-gray-500 text-sm font-medium pb-3">Skill Level</th>
+                  <th className="text-left text-gray-500 text-sm font-medium pb-3">Location</th>
+                  <th className="text-left text-gray-500 text-sm font-medium pb-3">Players</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td colSpan="4" className="pt-8 text-center text-gray-500">
-                    No matches played yet
-                  </td>
-                </tr>
+                {myGames.length === 0 ? (
+                  <tr>
+                    <td colSpan="5" className="pt-8 text-center text-gray-500">
+                      No game created yet
+                    </td>
+                  </tr>
+                ) : (
+                  myGames.map((game) => (
+                    <tr key={game._id} className="border-b border-neutral-800">
+                      <td className="py-3">{game.sport}</td>
+                      <td className="py-3">{game.duration} mins</td>
+                      <td className="py-3">{game.skillLevel}</td>
+                      <td className="py-3">{game.location?.city}</td>
+                      <td className="py-3">
+                        {game.currentPlayers?.length}/{game.maxPlayers}
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
