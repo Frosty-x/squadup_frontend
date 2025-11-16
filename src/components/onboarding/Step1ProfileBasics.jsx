@@ -2,7 +2,6 @@ import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronRight, Camera } from 'lucide-react';
 import { AuthContext } from '../../context/AuthContext';
-import api from '../../services/api';
 
 export default function Step1ProfileBasics() {
   const navigate = useNavigate();
