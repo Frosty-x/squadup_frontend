@@ -22,7 +22,7 @@ export default function Dashboard() {
   const loadGames = async()=>{
     try {
       const response = await gameService.getMyGames()
-      setMyGames(response)
+      setMyGames(response.data)
       
     } catch (error) {
       console.log("Error loading Games",error);
@@ -221,8 +221,11 @@ export default function Dashboard() {
                       <td className="py-3">{game.skillLevel}</td>
                       <td className="py-3">{game.location?.city}</td>
                       <td className="py-3">
-                        {game.currentPlayers?.length}/{game.maxPlayers}
+                        {game.currentPlayers?.length}/{10}
                       </td>
+                      <Pencil
+                      onClick={()=>navigate('/createGame')}
+                      className='size-4 mt-3 cursor-pointer'/>
                     </tr>
                   ))
                 )}
