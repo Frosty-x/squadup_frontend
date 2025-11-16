@@ -9,6 +9,16 @@ const gameService = {
             throw new Error(error.message || 'Failed to create game');
         }
     },
+    getAllGames: async () => {
+        try {
+            const response = await api.get("/game/all");
+            return response.data;
+
+        } catch (error) {
+            throw new Error(error.response.data.message || 'Failed to fetch games');
+
+        }
+    },
     getMyGames: async () => {
         try {
             const response = await api.get('/game/myGames');

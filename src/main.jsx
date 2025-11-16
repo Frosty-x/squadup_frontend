@@ -9,7 +9,7 @@ import FindPlayer from './pages/FindPlayer.jsx'
 createRoot(document.getElementById('root')).render(
   <AuthProvider>  
     <BrowserRouter>
-    <FindPlayer/>
+    <App />
   </BrowserRouter>
   </AuthProvider>
 )

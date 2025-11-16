@@ -5,6 +5,8 @@ import SignInPage from './pages/SignInPage';
 import Dashboard from './pages/Dashboard';
 import OnboardingLayout from './components/onboarding/OnboardingLayout';
 import CreateGames from './pages/Creategames';
+import BrowseGame from './pages/BrowseGame';
+import FindPlayer from './pages/FindPlayer';
 
 function App() {
   return (
@@ -14,6 +16,10 @@ function App() {
       <Route path="/signup" element={<SignUpPage />} />
       <Route path="/signin" element={<SignInPage />} />
       <Route path='/creategame' element={<CreateGames />}></Route>
+      <Route path='/BrowseGame' element={<BrowseGame />}></Route>
+      <Route path='/FindPlayer' element={<FindPlayer />}></Route>
+
+
       
       {/* Onboarding Routes */}
       <Route path="/onboarding/*" element={<OnboardingLayout />} />

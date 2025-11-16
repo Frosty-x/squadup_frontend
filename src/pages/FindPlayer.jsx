@@ -44,23 +44,23 @@ const defaultPlayers = [
 
 export default function FindPlayer({ players = defaultPlayers }) {
   return (
-    
+
     <div className="min-h-screen bg-black px-4 md:px-6 lg:px-10 py-10">
       <div className="max-w-7xl mx-auto">
- 
+
 
         {/* Header */}
         <div className="bg-neutral-900/90 border border-red-900/40 backdrop-blur-md rounded-2xl p-5 md:p-7 mb-10 shadow-lg 
                         animate-[fadeIn_0.6s_ease]">
           <div className="flex flex-col sm:flex-row text-white justify-between items-start sm:items-center gap-4">
-         <TrueFocus 
-sentence="Active Players"
-manualMode={false}
-blurAmount={5}
-borderColor="red"
-animationDuration={2}
-pauseBetweenAnimations={1}
-/>
+            <TrueFocus
+              sentence="Active Players"
+              manualMode={false}
+              blurAmount={5}
+              borderColor="red"
+              animationDuration={2}
+              pauseBetweenAnimations={1}
+            />
 
             <div className="flex gap-3 md:gap-4 flex-wrap">
               <select className="bg-neutral-900 border border-red-800/40 text-white text-sm px-4 py-2 rounded-lg 

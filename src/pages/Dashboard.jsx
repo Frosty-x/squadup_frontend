@@ -14,7 +14,7 @@ export default function Dashboard() {
     if (!user) {
       navigate('/signin');
     } else {
-      loadGames();   // load your games when the user exists
+      loadGames(); 
     }
   }
 }, [user, loading, navigate]);
@@ -232,12 +232,12 @@ export default function Dashboard() {
         </div>
         {/* Quick Actions */}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-          <button className="bg-red-700 hover:bg-red-800 text-white font-bold text-lg px-8 py-6 rounded-2xl shadow-lg hover:shadow-red-900/50 transition-all duration-300 hover:scale-105">
+        <div  className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+          <button onClick={() => navigate('/FindPlayer')} className="bg-red-700 hover:bg-red-800 text-white font-bold text-lg px-8 py-6 rounded-2xl shadow-lg hover:shadow-red-900/50 transition-all duration-300 hover:scale-105">
             FIND PLAYERS
           </button>
           <button
-            onClick={() => navigate('/sports')}
+            onClick={() => navigate('/BrowseGame')}
             className="bg-neutral-900 border-2 border-neutral-800 hover:border-red-700 text-white font-bold text-lg px-8 py-6 rounded-2xl transition-all duration-300 hover:scale-105">
             BROWSE GAMES
           </button>
