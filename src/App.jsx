@@ -20,6 +20,8 @@ function App() {
       <Route path='/FindPlayer' element={<FindPlayer />}></Route>
 
 
+
+
       
       {/* Onboarding Routes */}
       <Route path="/onboarding/*" element={<OnboardingLayout />} />
