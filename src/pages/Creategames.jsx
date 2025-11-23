@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { MapPin, Calendar, Trophy, Users, Target } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import gameService from '../services/gameService';
+import { toast } from "react-toastify";
 
 export default function CreateGames() {
   const sports = ["Football", "Basketball", "Cricket", "Volleyball", "Badminton"];
@@ -154,7 +155,7 @@ export default function CreateGames() {
       const response = await gameService.createGame(gameData);
       console.log("Game created successfully:", response);
       
-      alert(`Game "${response.data.title}" created successfully!`);
+      toast.success(`Game "${response.data.title}" created successfully!`);
       
       navigate('/dashboard');
       

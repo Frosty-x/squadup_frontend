@@ -12,8 +12,8 @@ export default function Navbar() {
 
   const NAV_ITEMS = [
     { name: "HOME", href: "/" },
-    { name: "GAMES", href: "/sport" },
-    { name: "PLAYERS", href: "/players" },
+    { name: "GAMES", href: "/BrowseGame" },
+    { name: "PLAYERS", href: "/FindPlayer" },
     { name: "ABOUT", href: "/about" },
   ];
 
@@ -42,7 +42,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl border-b border-neutral-800/50 bg-black/80">
+    <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-3xl border-b border-neutral-800/50 bg-black/80">
       <div className="max-w-7xl mx-auto flex items-center justify-between py-4 px-4 sm:px-6">
         {/* Logo */}
         <button
