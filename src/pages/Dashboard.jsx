@@ -8,6 +8,9 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const { user, logout, loading } = useContext(AuthContext);
   const [myGames, setMyGames] = useState([])
+  const [join, setJoin] = useState([])
+  const [selectedOption, setSelectedOption] = useState('myGames')
+
 
   useEffect(() => {
   if (!loading) {
@@ -15,9 +18,12 @@ export default function Dashboard() {
       navigate('/signin');
     } else {
       loadGames(); 
+      joinedGames()
     }
   }
 }, [user, loading, navigate]);
+
+const gamesToShow = selectedOption === 'myGames' ? myGames : join
 
   const loadGames = async()=>{
     try {
@@ -26,6 +32,15 @@ export default function Dashboard() {
       
     } catch (error) {
       console.log("Error loading Games",error);
+      
+    }
+  }
+  const joinedGames = async()=>{
+    try {
+      const response = await gameService.getJoinedGames()
+      setJoin(response.data)
+    } catch (error) {
+      console.log("Error joined Games",error);
       
     }
   }
@@ -194,7 +209,15 @@ export default function Dashboard() {
 
         {/* My Matches Table */}
         <div className="mt-6 bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
-          <h3 className="text-lg font-bold mb-4">My Games</h3>
+          <div className='flex justify-end mb-4'>
+            <select 
+            value={selectedOption}
+            onChange={(e)=>setSelectedOption(e.target.value)}
+            className='bg-neutral-900 text-gray-300 px-3 py-2 rounded-lg border border-red-900'>
+              <option value="myGames">My games</option>
+              <option value="joinedGame">Joined games</option>
+            </select>
+          </div>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -207,21 +230,23 @@ export default function Dashboard() {
                 </tr>
               </thead>
               <tbody>
-                {myGames.length === 0 ? (
+                {gamesToShow.length === 0 ? (
                   <tr>
                     <td colSpan="5" className="pt-8 text-center text-gray-500">
-                      No game created yet
+                      {selectedOption === 'myGames' ? 'No games Created yet' : 'No games joined yet'}
                     </td>
                   </tr>
                 ) : (
-                  myGames.map((game) => (
+                  gamesToShow.map((game) => (
                     <tr key={game._id} className="border-b border-neutral-800">
                       <td className="py-3">{game.sport}</td>
                       <td className="py-3">{game.duration} mins</td>
                       <td className="py-3">{game.skillLevel}</td>
-                      <td className="py-3">{game.location?.city}</td>
+                      <td className="py-3">{game.location?.address}</td>
                       <td className="py-3">
-                        {game.currentPlayers?.length}/{10}
+                        <img 
+                        className='w-10 h-10 rounded-full object-cover'
+                        src={user.profilePic} alt="profile" />
                       </td>
                       <Pencil
                       onClick={()=>navigate('/createGame')}

@@ -26,6 +26,15 @@ const gameService = {
         } catch (error) {
             throw new Error(error.message || 'Failed to fetch my games')
         }
+    },
+    getJoinedGames: async () => {
+        try {
+            const response = await api.get('/game/join')
+            return response.data
+        } catch (error) {
+            throw new Error(error.message || 'Failed to fetch joined games')
+        }
     }
+
 }
 export default gameService;
