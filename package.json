@@ -20,6 +20,7 @@
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.9.4",
+    "react-testify": "^0.0.13",
     "react-toastify": "^11.0.5",
     "Router": "^2.1.0",
     "tailwindcss": "^4.1.16"

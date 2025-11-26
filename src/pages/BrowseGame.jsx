@@ -9,7 +9,7 @@ export default function BrowseGames() {
   const [showSportDropdown, setShowSportDropdown] = useState(false);
   const [showSkillDropdown, setShowSkillDropdown] = useState(false);
 
-  // States for API data
+  // API states
   const [games, setGames] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -17,19 +17,30 @@ export default function BrowseGames() {
   const sports = ["All Sports", "Football", "Basketball", "Cricket", "Volleyball", "Badminton"];
   const skillLevels = ["All Levels", "Beginner", "Intermediate", "Advanced"];
 
+  // ⭐ FIXED JOIN GAME (frontend no longer blocks open games)
+  const joinGame = async (gameId) => {
+    try {
+      const response = await gameService.joinGame(gameId);
+      alert(response.message);
+      await fetchGames();
+    } catch (error) {
+      alert(error.message);
+      await fetchGames();
+    }
+  };
+
   useEffect(() => {
     fetchGames();
   }, []);
 
-  // Function to fetch all games from backend
   const fetchGames = async () => {
     try {
       setLoading(true);
       setError(null);
+
       const response = await gameService.getAllGames();
-      setGames(response.data);
+      setGames(response.data || response); // handles both {data:[]} and []
     } catch (err) {
-      console.error("Error fetching games:", err);
       setError(err?.message || "Failed to load games");
     } finally {
       setLoading(false);
@@ -47,18 +58,14 @@ export default function BrowseGames() {
     return date.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
   };
 
-  // Filter games based on search and filters
   const filteredGames = games.filter((game) => {
-    // Search filter
     const matchesSearch =
       game.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       game.sport?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       game.location?.city?.toLowerCase().includes(searchQuery.toLowerCase());
 
-    // Sport filter
     const matchesSport = selectedSport === "All Sports" || game.sport === selectedSport;
 
-    // Skill level filter
     const matchesSkillLevel =
       selectedSkillLevel === "All Levels" ||
       (game.skillLevel || "").toLowerCase() === selectedSkillLevel.toLowerCase();
@@ -77,9 +84,10 @@ export default function BrowseGames() {
           <p className="text-gray-400 text-base md:text-lg font-light">Find and join games in your area</p>
         </div>
 
-        {/* Search and Filters Section */}
+        {/* Search & Filters */}
         <div className="mb-12">
           <div className="flex flex-col md:flex-row gap-3">
+            {/* Search */}
             <div className="relative flex-1">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
               <input
@@ -91,7 +99,7 @@ export default function BrowseGames() {
               />
             </div>
 
-            {/* Sport Filter Dropdown */}
+            {/* Sport Dropdown */}
             <div className="relative">
               <button
                 onClick={() => {
@@ -124,7 +132,7 @@ export default function BrowseGames() {
               )}
             </div>
 
-            {/* Skill Level Filter Dropdown */}
+            {/* Skill Dropdown */}
             <div className="relative">
               <button
                 onClick={() => {
@@ -159,7 +167,7 @@ export default function BrowseGames() {
           </div>
         </div>
 
-        {/* Active Filters Display */}
+        {/* Active Filters */}
         {(selectedSport !== "All Sports" || selectedSkillLevel !== "All Levels") && (
           <div className="mb-8 flex items-center gap-3 flex-wrap">
             <span className="text-gray-400 text-sm">Active Filters:</span>
@@ -194,6 +202,7 @@ export default function BrowseGames() {
           </div>
         )}
 
+        {/* Loading */}
         {loading && (
           <div className="text-center py-20">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500"></div>
@@ -201,6 +210,7 @@ export default function BrowseGames() {
           </div>
         )}
 
+        {/* Error */}
         {error && (
           <div className="text-center py-20">
             <div className="bg-red-900/20 border border-red-700/50 rounded-xl p-6 max-w-md mx-auto">
@@ -213,98 +223,97 @@ export default function BrowseGames() {
         )}
 
         {/* Games Grid */}
-        {!loading && !error && (
+        {!loading && !error && filteredGames.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredGames.map((game) => (
-              <div
-                key={game._id}
-                className="bg-neutral-900 border border-red-700/30 rounded-2xl p-6 hover:border-red-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-red-900/20"
-              >
-                {/* Card Header with Sport and Status */}
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center gap-2">
-                    <Trophy size={20} className="text-red-400" />
-                    <span className="text-red-400 font-medium text-sm">{game.sport}</span>
-                  </div>
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs font-medium ${
-                      game.status === "open"
-                        ? "bg-green-500/20 text-green-400 border border-green-500/30"
-                        : "bg-gray-500/20 text-gray-400 border border-gray-500/30"
-                    }`}
-                  >
-                    {game.status === "open" ? "OPEN" : "FULL"}
-                  </span>
-                </div>
+            {filteredGames.map((game) => {
+              const status = game.status?.toLowerCase();
+              const isOpen = status === "open";
+              const current = game.currentPlayers?.length || 0;
 
-                {/* Game title */}
-                <h3 className="text-xl font-bold text-white mb-2">{game.title}</h3>
-
-                {/* Creator name */}
-                <p className="text-gray-400 text-sm mb-4">Organized by {game.creator?.name}</p>
-
-                {/* Game information */}
-                <div className="space-y-3 mb-5">
-                  {/* Date and Time */}
-                  <div className="flex items-center gap-2 text-gray-300 text-sm">
-                    <Calendar size={16} className="text-red-400" />
-                    <span>{formatDate(game.date)} at {formatTime(game.date)}</span>
-                  </div>
-
-                  {/* Location */}
-                  <div className="flex items-center gap-2 text-gray-300 text-sm">
-                    <MapPin size={16} className="text-red-400" />
-                    <span>{game.location?.city}</span>
-                  </div>
-
-                  {/* Duration */}
-                  <div className="flex items-center gap-2 text-gray-300 text-sm">
-                    <Clock size={16} className="text-red-400" />
-                    <span>{game.duration} minutes</span>
-                  </div>
-
-                  {/* Skill Level */}
-                  <div className="flex items-center gap-2 text-gray-300 text-sm">
-                    <Target size={16} className="text-red-400" />
-                    <span className="capitalize">{game.skillLevel}</span>
-                  </div>
-                </div>
-
-                {/* Players Progress Section */}
-                <div className="mb-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-gray-400 text-sm">Players Joined</span>
-                    <span className="text-white font-medium text-sm">
-                      {game.currentPlayers?.length || 0} / {game.playersNeeded}
+              return (
+                <div
+                  key={game._id}
+                  className="bg-neutral-900 border border-red-700/30 rounded-2xl p-6 hover:border-red-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-red-900/20"
+                >
+                  {/* Header */}
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <Trophy size={20} className="text-red-400" />
+                      <span className="text-red-400 font-medium text-sm">{game.sport}</span>
+                    </div>
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-medium ${
+                        isOpen
+                          ? "bg-green-500/20 text-green-400 border border-green-500/30"
+                          : "bg-gray-500/20 text-gray-400 border border-gray-500/30"
+                      }`}
+                    >
+                      {isOpen ? "OPEN" : "FULL"}
                     </span>
                   </div>
 
-                  {/* Progress Bar */}
-                  <div className="w-full bg-neutral-800 rounded-full h-2 overflow-hidden">
-                    <div
-                      className="bg-gradient-to-r from-red-700 to-orange-600 h-full rounded-full transition-all duration-300"
-                      style={{ width: `${((game.currentPlayers?.length || 0) / (game.playersNeeded || 1)) * 100}%` }}
-                    ></div>
-                  </div>
-                </div>
+                  <h3 className="text-xl font-bold text-white mb-2">{game.title}</h3>
+                  <p className="text-gray-400 text-sm mb-4">Organized by {game.creator?.name}</p>
 
-                {/* Join Button */}
-                <button
-                  disabled={game.status === "full"}
-                  className={`w-full py-3 rounded-xl font-medium transition-all duration-300 ${
-                    game.status === "open"
-                      ? "bg-gradient-to-r from-red-700 via-red-600 to-orange-600 text-white hover:opacity-90 active:scale-[0.98]"
-                      : "bg-neutral-800 text-gray-500 cursor-not-allowed"
-                  }`}
-                >
-                  {game.status === "open" ? "Join Game" : "Game Full"}
-                </button>
-              </div>
-            ))}
+                  {/* Info */}
+                  <div className="space-y-3 mb-5">
+                    <div className="flex items-center gap-2 text-gray-300 text-sm">
+                      <Calendar size={16} className="text-red-400" />
+                      <span>{formatDate(game.date)} at {formatTime(game.date)}</span>
+                    </div>
+
+                    <div className="flex items-center gap-2 text-gray-300 text-sm">
+                      <MapPin size={16} className="text-red-400" />
+                      <span>{game.location?.city}</span>
+                    </div>
+
+                    <div className="flex items-center gap-2 text-gray-300 text-sm">
+                      <Clock size={16} className="text-red-400" />
+                      <span>{game.duration} minutes</span>
+                    </div>
+
+                    <div className="flex items-center gap-2 text-gray-300 text-sm">
+                      <Target size={16} className="text-red-400" />
+                      <span className="capitalize">{game.skillLevel}</span>
+                    </div>
+                  </div>
+
+                  {/* Players */}
+                  <div className="mb-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-gray-400 text-sm">Players Joined</span>
+                      <span className="text-white font-medium text-sm">
+                        {current} / {game.playersNeeded}
+                      </span>
+                    </div>
+
+                    <div className="w-full bg-neutral-800 rounded-full h-2 overflow-hidden">
+                      <div
+                        className="bg-gradient-to-r from-red-700 to-orange-600 h-full rounded-full transition-all duration-300"
+                        style={{ width: `${(current / game.playersNeeded) * 100}%` }}
+                      ></div>
+                    </div>
+                  </div>
+
+                  {/* Join button */}
+                  <button
+                    onClick={() => joinGame(game._id)}
+                    disabled={!isOpen}
+                    className={`w-full py-3 rounded-xl font-medium transition-all duration-300 ${
+                      isOpen
+                        ? "bg-gradient-to-r from-red-700 via-red-600 to-orange-600 text-white hover:opacity-90 active:scale-[0.98]"
+                        : "bg-neutral-800 text-gray-500 cursor-not-allowed"
+                    }`}
+                  >
+                    {isOpen ? "Join Game" : "Game Full"}
+                  </button>
+                </div>
+              );
+            })}
           </div>
         )}
 
-        {/* Empty State Message - shown when no games available */}
+        {/* Empty */}
         {!loading && !error && filteredGames.length === 0 && (
           <div className="text-center py-20">
             <Trophy size={64} className="mx-auto text-gray-600 mb-4" />
