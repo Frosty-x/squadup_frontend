@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { useNavigate,Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { MapPin, LogOut, Pencil } from 'lucide-react';
 import gameService from '../services/gameService';
@@ -8,40 +8,68 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const { user, logout, loading } = useContext(AuthContext);
   const [myGames, setMyGames] = useState([])
-  const [join, setJoin] = useState([])
+  // const [join, setJoin] = useState([])
+  const [upcomingGame, setUpcomingGame] = useState([]);
+  const [pastGame, setPastGame] = useState([]);
   const [selectedOption, setSelectedOption] = useState('myGames')
 
 
   useEffect(() => {
-  if (!loading) {
-    if (!user) {
-      navigate('/signin');
-    } else {
-      loadGames(); 
-      joinedGames()
+    if (!loading) {
+      if (!user) {
+        navigate('/signin');
+      } else {
+        loadGames();
+        // joinedGames();
+        upcomingGames();
+        pastGames();
+      }
     }
-  }
-}, [user, loading, navigate]);
+  }, [user, loading, navigate]);
 
-const gamesToShow = selectedOption === 'myGames' ? myGames : join
+  let gamesToShow = [];
+  if (selectedOption === "myGames") gamesToShow = myGames;
+  else if (selectedOption === "pastGames") gamesToShow = pastGame;
+  else if (selectedOption === "upcomingGame") gamesToShow = upcomingGame;
 
-  const loadGames = async()=>{
+
+  const loadGames = async () => {
     try {
       const response = await gameService.getMyGames()
       setMyGames(response.data)
-      
+
     } catch (error) {
-      console.log("Error loading Games",error);
-      
+      console.log("Error loading Games", error);
+
     }
   }
-  const joinedGames = async()=>{
+  // const joinedGames = async () => {
+  //   try {
+  //     const response = await gameService.getJoinedGames()
+  //     setJoin(response.data)
+  //   } catch (error) {
+  //     console.log("Error joined Games", error);
+
+  //   }
+  // }
+
+  const upcomingGames = async () => {
     try {
-      const response = await gameService.getJoinedGames()
-      setJoin(response.data)
+      const response = await gameService.getUpcomingGames();
+      setUpcomingGame(response.data);
     } catch (error) {
-      console.log("Error joined Games",error);
-      
+      console.log("Error loading upcoming games", error);
+
+    }
+  }
+
+  const pastGames = async () => {
+    try {
+      const response = await gameService.getPastGames();
+      setPastGame(response.data);
+    } catch (error) {
+      console.log("Error loading upcoming games", error);
+
     }
   }
 
@@ -149,7 +177,7 @@ const gamesToShow = selectedOption === 'myGames' ? myGames : join
 
                 <div>
                   <p className="text-gray-500 text-sm mb-1">My Preferred Sport</p>
-                  <p className="text-white font-extralight">{user.location.city || "No City Selected"}</p>
+                  <p className="text-white font-extralight">{user?.location?.city || "No City Selected"}</p>
                 </div>
 
                 <div>
@@ -185,8 +213,8 @@ const gamesToShow = selectedOption === 'myGames' ? myGames : join
 
                 <div>
                   <p className="text-gray-500 text-sm mb-2 border-b border-neutral-700">Availability</p>
-                   <span className="text-gray-500 text-sm">
-                    Member Since : {user?.createdAt?.split("T")[0]} 
+                  <span className="text-gray-500 text-sm">
+                    Member Since : {user?.createdAt?.split("T")[0]}
                   </span><br />
                   <span className="inline-flex items-center gap-2 bg-green-500/20 text-green-400 text-xs font-bold px-3 py-1.5 rounded-full mt-2">
                     <span className="w-2 h-2 bg-green-400 rounded-full"></span>
@@ -195,7 +223,7 @@ const gamesToShow = selectedOption === 'myGames' ? myGames : join
                 </div>
 
               </div>
-             <Link to="/creategame">
+              <Link to="/creategame">
                 <button className="cursor-pointer border border-red-900 text-white font-bold text-lg px-10 py-4 rounded-2xl shadow-lg transition-all duration-300 hover:scale-105">
                   CREATE GAMES
                 </button>
@@ -210,12 +238,14 @@ const gamesToShow = selectedOption === 'myGames' ? myGames : join
         {/* My Matches Table */}
         <div className="mt-6 bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
           <div className='flex justify-end mb-4'>
-            <select 
-            value={selectedOption}
-            onChange={(e)=>setSelectedOption(e.target.value)}
-            className='bg-neutral-900 text-gray-300 px-3 py-2 rounded-lg border border-red-900'>
+            <select
+              value={selectedOption}
+              onChange={(e) => setSelectedOption(e.target.value)}
+              className='bg-neutral-900 text-gray-300 px-3 py-2 rounded-lg border border-red-900'>
               <option value="myGames">My games</option>
-              <option value="joinedGame">Joined games</option>
+              <option value="pastGames">Past games</option>
+              <option value="upcomingGame">Upcoming games</option>
+
             </select>
           </div>
           <div className="overflow-x-auto">
@@ -239,19 +269,22 @@ const gamesToShow = selectedOption === 'myGames' ? myGames : join
                 ) : (
                   gamesToShow.map((game) => (
                     <tr key={game._id} className="border-b border-neutral-800">
-                      <td className="py-3">{game.sport}</td>
-                      <td className="py-3">{game.duration} mins</td>
-                      <td className="py-3">{game.skillLevel}</td>
-                      <td className="py-3">{game.location?.address}</td>
-                      <td className="py-3">
-                        <img 
-                        className='w-10 h-10 rounded-full object-cover'
-                        src={user.profilePic} alt="profile" />
+                      <td>{game.sport}</td>
+                      <td>{game.duration} mins</td>
+                      <td>{game.skillLevel}</td>
+                      <td>{game.location?.address}</td>
+                      <td>
+                        <img className='w-10 h-10 rounded-full object-cover' src={user.profilePic} />
                       </td>
-                      <Pencil
-                      onClick={()=>navigate('/createGame')}
-                      className='size-4 mt-3 cursor-pointer'/>
+
+                      <td>
+                        <Pencil
+                          onClick={() => navigate('/createGame')}
+                          className='size-4 mt-3 cursor-pointer'
+                        />
+                      </td>
                     </tr>
+
                   ))
                 )}
               </tbody>
@@ -260,7 +293,7 @@ const gamesToShow = selectedOption === 'myGames' ? myGames : join
         </div>
         {/* Quick Actions */}
 
-        <div  className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
           <button onClick={() => navigate('/FindPlayer')} className="bg-red-700 hover:bg-red-800 text-white font-bold text-lg px-8 py-6 rounded-2xl shadow-lg hover:shadow-red-900/50 transition-all duration-300 hover:scale-105">
             FIND PLAYERS
           </button>
