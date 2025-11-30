@@ -217,6 +217,13 @@ export default function FindPlayer() {
                                      shadow-md shadow-red-900/40">
                     RECRUIT
                   </button>
+                   <button className="w-full border border-red-600
+                                     text-white font-bold 
+                                     text-sm py-3 rounded-lg mt-5 
+                                     transition-all duration-300 hover:scale-105 
+                                     shadow-md shadow-red-900/40">
+                    ADD FRIEND
+                  </button>
                 </div>
               </div>
             ))}
