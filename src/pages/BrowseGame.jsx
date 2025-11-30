@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Search, MapPin, Calendar, Clock, Target, Trophy, ChevronDown } from "lucide-react";
 import gameService from "../services/gameService";
+import { toast } from "react-toastify";
 
 export default function BrowseGames() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -17,17 +18,17 @@ export default function BrowseGames() {
   const sports = ["All Sports", "Football", "Basketball", "Cricket", "Volleyball", "Badminton"];
   const skillLevels = ["All Levels", "Beginner", "Intermediate", "Advanced"];
 
-  // ⭐ FIXED JOIN GAME (frontend no longer blocks open games)
-  const joinGame = async (gameId) => {
-    try {
-      const response = await gameService.joinGame(gameId);
-      alert(response.message);
-      await fetchGames();
-    } catch (error) {
-      alert(error.message);
-      await fetchGames();
-    }
-  };
+const joinGame = async (gameId) => {
+  try {
+    const response = await gameService.joinGame(gameId);
+    setError(response.message);
+    await fetchGames();
+  } catch (error) {
+    toast.error(error.message);
+    await fetchGames();
+  }
+};
+
 
   useEffect(() => {
     fetchGames();
@@ -74,7 +75,8 @@ export default function BrowseGames() {
   });
 
   return (
-    <div className="min-h-screen bg-black text-white px-6 py-16">
+    <div className="min-h-screen mt-15 bg-black text-white px-6 py-16">
+      
       <div className="max-w-7xl mx-auto">
 
         <div className="text-center space-y-2 mb-12">
