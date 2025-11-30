@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import TrueFocus from '../Animation/TrueFocus/TrueFocus';
 import playerService from '../services/playerService'; // Adjust path if needed
 
 
@@ -58,23 +57,30 @@ export default function FindPlayer() {
   }, []); 
 
   return (
-    <div className="min-h-screen bg-black px-4 md:px-6 lg:px-10 py-10">
+    <div className="min-h-screen mt-15 bg-black px-4 md:px-6 lg:px-10 py-10">
+      
       <div className="max-w-7xl mx-auto">
 
         {/* Header */}
         <div className="bg-neutral-900/90 border border-red-900/40 backdrop-blur-md rounded-2xl p-5 md:p-7 mb-10 shadow-lg 
                         animate-[fadeIn_0.6s_ease]">
           <div className="flex flex-col sm:flex-row text-white justify-between items-start sm:items-center gap-4">
-            <TrueFocus
-              sentence="Active Players"
-              manualMode={false}
-              blurAmount={5}
-              borderColor="red"
-              animationDuration={2}
-              pauseBetweenAnimations={1}
-            />
-
-            <div className="flex gap-3 md:gap-4 flex-wrap">
+            <div className="flex gap-2 w-full sm:w-auto">
+              <input 
+                type="text" 
+                placeholder="Search players..." 
+                className="bg-neutral-900 border border-red-800/40 text-white text-sm px-4 py-2 rounded-lg 
+                           hover:border-red-600 focus:border-red-600 focus:outline-none transition-all flex-1 sm:w-64"
+              />
+              <button className="bg-gradient-to-r from-red-600 to-red-700 
+                                 hover:from-red-500 hover:to-red-600 text-white font-bold 
+                                 text-sm px-6 py-2 rounded-lg 
+                                 transition-all duration-300 hover:scale-105 
+                                 shadow-md shadow-red-900/40">
+                Search
+              </button>
+            </div>
+            <div className="flex gap-3 md:gap-4 flex-wrap items-center">
               <select className="bg-neutral-900 border border-red-800/40 text-white text-sm px-4 py-2 rounded-lg 
                                  hover:border-red-600 transition-all">
                 <option>All Sports</option>
