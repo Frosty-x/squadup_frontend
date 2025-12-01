@@ -154,16 +154,14 @@ export default function CreateGames() {
     try {
       const response = await gameService.createGame(gameData);
       console.log("Game created successfully:", response);
-      
+
       toast.success(`Game "${response.data.title}" created successfully!`);
-      
+
       navigate('/dashboard');
-      
+
     } catch (error) {
       console.error("Error creating game:", error);
-      setErrors({ 
-        submit: error.message || "Failed to create game. Please try again." 
-      });
+      toast.error(error.message || "Failed to create game. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -228,11 +226,10 @@ export default function CreateGames() {
                       key={sport}
                       type="button"
                       onClick={() => handleSportSelect(sport)}
-                      className={`py-2.5 rounded-lg font-medium text-sm border transition-all duration-300 ${
-                        formData.sport === sport
+                      className={`py-2.5 rounded-lg font-medium text-sm border transition-all duration-300 ${formData.sport === sport
                           ? "bg-red-700 border-red-600 text-white"
                           : "bg-neutral-800 text-gray-300 border-red-800/30 hover:bg-red-700/80 hover:border-red-600/50 hover:text-white"
-                      }`}
+                        }`}
                     >
                       {sport}
                     </button>
@@ -402,11 +399,10 @@ export default function CreateGames() {
                       key={level}
                       type="button"
                       onClick={() => handleSkillLevelSelect(level)}
-                      className={`py-2.5 rounded-lg font-medium text-sm border transition-all duration-300 capitalize ${
-                        formData.skillLevel === level
+                      className={`py-2.5 rounded-lg font-medium text-sm border transition-all duration-300 capitalize ${formData.skillLevel === level
                           ? "bg-red-700 border-red-600 text-white"
                           : "bg-neutral-800 text-gray-300 border-red-800/30 hover:bg-red-700/80 hover:border-red-600/50 hover:text-white"
-                      }`}
+                        }`}
                     >
                       {level}
                     </button>
