@@ -1,13 +1,9 @@
-<<<<<<< HEAD
-import React, { useState } from 'react';
-import { Calendar, Clock, Users, MapPin, Award, User, Shield, Star } from 'lucide-react';
-=======
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Calendar, Clock, Users, MapPin, Trophy, User, Shield, Award, Star } from 'lucide-react';
 import gameService from '../services/gameService';
 import { toast } from 'react-toastify';
->>>>>>> 01aeddd34ee1803075ccd5f935def2695405f6e3
+
 
 const GameDetail = () => {
   const { id } = useParams();
@@ -100,12 +96,6 @@ const GameDetail = () => {
   return (
     <div className="min-h-screen bg-black p-4 md:p-8">
       <div className="max-w-6xl mx-auto">
-<<<<<<< HEAD
-      
-
-        {/* Header Card */}
-=======
->>>>>>> 01aeddd34ee1803075ccd5f935def2695405f6e3
         <div className="bg-zinc-950 rounded-lg shadow-2xl overflow-hidden border border-zinc-800">
           
           <div className="relative bg-gradient-to-r from-black via-red-950 to-black p-8 md:p-12 border-b border-red-900/30">
@@ -218,38 +208,6 @@ const GameDetail = () => {
                 </div>
               </div>
 
-<<<<<<< HEAD
-              {/* Player List */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                {displayedPlayers.map((player) => (
-                  <div key={player.id} className="flex items-center gap-4 p-4 bg-black rounded-lg border border-zinc-800 hover:border-zinc-700 transition-colors">
-                    <div className={`w-12 h-12 ${
-                      player.status === 'Organizer' 
-                        ? 'bg-gradient-to-br from-red-600 to-red-800' 
-                        : 'bg-gradient-to-br from-zinc-700 to-zinc-800'
-                    } text-white rounded-full flex items-center justify-center font-semibold shadow-lg`}>
-                      {player.avatar}
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-semibold text-white">{player.name}</p>
-                      <div className="flex items-center gap-1 mt-1">
-                        {player.status === 'Organizer' ? (
-                          <span className="text-xs px-2 py-1 rounded bg-red-500/20 text-red-400 border border-red-500/30">
-                            Organizer
-                          </span>
-                        ) : (
-                          <div className="flex items-center gap-0.5">
-                            {[...Array(5)].map((_, i) => (
-                              <Star
-                                key={i}
-                                className={`w-3.5 h-3.5 ${
-                                  i < player.rating
-                                    ? 'text-red-500 fill-red-500'
-                                    : 'text-zinc-700'
-                                }`}
-                              />
-                            ))}
-=======
               {currentPlayers.length > 0 ? (
                 <>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
@@ -285,7 +243,6 @@ const GameDetail = () => {
                                 <span className="text-xs text-gray-500">Player</span>
                               )}
                             </div>
->>>>>>> 01aeddd34ee1803075ccd5f935def2695405f6e3
                           </div>
                           {isOrganizer && (
                             <Star className="w-5 h-5 text-red-500 fill-red-500" />
@@ -320,11 +277,7 @@ const GameDetail = () => {
                     : 'bg-gradient-to-r from-red-600 to-red-800 text-white hover:from-red-700 hover:to-red-900'
                 }`}
               >
-<<<<<<< HEAD
-                {isJoined ? 'Leave Game' : 'Join Game'}
-=======
                 {currentPlayers.length >= event.playersNeeded ? 'Game Full' : isJoined ? 'Already Joined' : 'Join Event'}
->>>>>>> 01aeddd34ee1803075ccd5f935def2695405f6e3
               </button>
             </div>
           </div>
