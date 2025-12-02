@@ -7,6 +7,7 @@ import OnboardingLayout from './components/onboarding/OnboardingLayout';
 import CreateGames from './pages/Creategames';
 import BrowseGame from './pages/BrowseGame';
 import FindPlayer from './pages/FindPlayer';
+import GameDetail from './pages/Gamedetail';
 
 function App() {
   return (
@@ -18,17 +19,14 @@ function App() {
       <Route path='/creategame' element={<CreateGames />}></Route>
       <Route path='/BrowseGame' element={<BrowseGame />}></Route>
       <Route path='/FindPlayer' element={<FindPlayer />}></Route>
+      <Route path='/GameDetail/:id' element={<GameDetail />}></Route>
 
-
-
-
-      
       {/* Onboarding Routes */}
       <Route path="/onboarding/*" element={<OnboardingLayout />} />
 
       {/* Dashboard */}
       <Route path="/dashboard" element={<Dashboard />} />
-            
+
       {/* Catch all - redirect to home */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
