@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { Search, MapPin, Calendar, Clock, Target, Trophy, ChevronDown } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Search, MapPin, Calendar, Clock, Target, Trophy, ChevronDown, Users } from "lucide-react";
 import gameService from "../services/gameService";
 import { toast } from "react-toastify";
 
 export default function BrowseGames() {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSport, setSelectedSport] = useState("All Sports");
   const [selectedSkillLevel, setSelectedSkillLevel] = useState("All Levels");
   const [showSportDropdown, setShowSportDropdown] = useState(false);
   const [showSkillDropdown, setShowSkillDropdown] = useState(false);
 
-  // API states
   const [games, setGames] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -18,17 +19,16 @@ export default function BrowseGames() {
   const sports = ["All Sports", "Football", "Basketball", "Cricket", "Volleyball", "Badminton"];
   const skillLevels = ["All Levels", "Beginner", "Intermediate", "Advanced"];
 
-const joinGame = async (gameId) => {
-  try {
-    const response = await gameService.joinGame(gameId);
-    setError(response.message);
-    await fetchGames();
-  } catch (error) {
-    toast.error(error.message);
-    await fetchGames();
-  }
-};
-
+  const joinGame = async (gameId) => {
+    try {
+      const response = await gameService.joinGame(gameId);
+      setError(response.message);
+      await fetchGames();
+    } catch (error) {
+      toast.error(error.message);
+      await fetchGames();
+    }
+  };
 
   useEffect(() => {
     fetchGames();
@@ -40,7 +40,7 @@ const joinGame = async (gameId) => {
       setError(null);
 
       const response = await gameService.getAllGames();
-      setGames(response.data || response); // handles both {data:[]} and []
+      setGames(response.data || response);
     } catch (err) {
       setError(err?.message || "Failed to load games");
     } finally {
@@ -76,7 +76,7 @@ const joinGame = async (gameId) => {
 
   return (
     <div className="min-h-screen mt-15 bg-black text-white px-6 py-16">
-      
+
       <div className="max-w-7xl mx-auto">
 
         <div className="text-center space-y-2 mb-12">
@@ -86,10 +86,8 @@ const joinGame = async (gameId) => {
           <p className="text-gray-400 text-base md:text-lg font-light">Find and join games in your area</p>
         </div>
 
-        {/* Search & Filters */}
         <div className="mb-12">
           <div className="flex flex-col md:flex-row gap-3">
-            {/* Search */}
             <div className="relative flex-1">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
               <input
@@ -101,7 +99,6 @@ const joinGame = async (gameId) => {
               />
             </div>
 
-            {/* Sport Dropdown */}
             <div className="relative">
               <button
                 onClick={() => {
@@ -123,9 +120,8 @@ const joinGame = async (gameId) => {
                         setSelectedSport(sport);
                         setShowSportDropdown(false);
                       }}
-                      className={`w-full text-left px-4 py-3 text-sm transition-colors ${
-                        selectedSport === sport ? "bg-red-700 text-white" : "text-gray-300 hover:bg-red-700/50"
-                      }`}
+                      className={`w-full text-left px-4 py-3 text-sm transition-colors ${selectedSport === sport ? "bg-red-700 text-white" : "text-gray-300 hover:bg-red-700/50"
+                        }`}
                     >
                       {sport}
                     </button>
@@ -134,7 +130,6 @@ const joinGame = async (gameId) => {
               )}
             </div>
 
-            {/* Skill Dropdown */}
             <div className="relative">
               <button
                 onClick={() => {
@@ -156,9 +151,8 @@ const joinGame = async (gameId) => {
                         setSelectedSkillLevel(level);
                         setShowSkillDropdown(false);
                       }}
-                      className={`w-full text-left px-4 py-3 text-sm transition-colors ${
-                        selectedSkillLevel === level ? "bg-red-700 text-white" : "text-gray-300 hover:bg-red-700/50"
-                      }`}
+                      className={`w-full text-left px-4 py-3 text-sm transition-colors ${selectedSkillLevel === level ? "bg-red-700 text-white" : "text-gray-300 hover:bg-red-700/50"
+                        }`}
                     >
                       {level}
                     </button>
@@ -169,7 +163,6 @@ const joinGame = async (gameId) => {
           </div>
         </div>
 
-        {/* Active Filters */}
         {(selectedSport !== "All Sports" || selectedSkillLevel !== "All Levels") && (
           <div className="mb-8 flex items-center gap-3 flex-wrap">
             <span className="text-gray-400 text-sm">Active Filters:</span>
@@ -204,7 +197,6 @@ const joinGame = async (gameId) => {
           </div>
         )}
 
-        {/* Loading */}
         {loading && (
           <div className="text-center py-20">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500"></div>
@@ -212,7 +204,6 @@ const joinGame = async (gameId) => {
           </div>
         )}
 
-        {/* Error */}
         {error && (
           <div className="text-center py-20">
             <div className="bg-red-900/20 border border-red-700/50 rounded-xl p-6 max-w-md mx-auto">
@@ -224,7 +215,6 @@ const joinGame = async (gameId) => {
           </div>
         )}
 
-        {/* Games Grid */}
         {!loading && !error && filteredGames.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredGames.map((game) => {
@@ -235,87 +225,99 @@ const joinGame = async (gameId) => {
               return (
                 <div
                   key={game._id}
-                  className="bg-neutral-900 border border-red-700/30 rounded-2xl p-6 hover:border-red-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-red-900/20"
+                  className="bg-gradient-to-b from-neutral-900 to-neutral-950 border border-red-700/20 rounded-2xl overflow-hidden hover:border-red-500/40 transition-all duration-300 hover:shadow-xl hover:shadow-red-900/30 hover:scale-105"
                 >
-                  {/* Header */}
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center gap-2">
-                      <Trophy size={20} className="text-red-400" />
-                      <span className="text-red-400 font-medium text-sm">{game.sport}</span>
-                    </div>
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        isOpen
-                          ? "bg-green-500/20 text-green-400 border border-green-500/30"
-                          : "bg-gray-500/20 text-gray-400 border border-gray-500/30"
-                      }`}
-                    >
-                      {isOpen ? "OPEN" : "FULL"}
-                    </span>
-                  </div>
-
-                  <h3 className="text-xl font-bold text-white mb-2">{game.title}</h3>
-                  <p className="text-gray-400 text-sm mb-4">Organized by {game.creator?.name}</p>
-
-                  {/* Info */}
-                  <div className="space-y-3 mb-5">
-                    <div className="flex items-center gap-2 text-gray-300 text-sm">
-                      <Calendar size={16} className="text-red-400" />
-                      <span>{formatDate(game.date)} at {formatTime(game.date)}</span>
-                    </div>
-
-                    <div className="flex items-center gap-2 text-gray-300 text-sm">
-                      <MapPin size={16} className="text-red-400" />
-                      <span>{game.location?.city}</span>
-                    </div>
-
-                    <div className="flex items-center gap-2 text-gray-300 text-sm">
-                      <Clock size={16} className="text-red-400" />
-                      <span>{game.duration} minutes</span>
-                    </div>
-
-                    <div className="flex items-center gap-2 text-gray-300 text-sm">
-                      <Target size={16} className="text-red-400" />
-                      <span className="capitalize">{game.skillLevel}</span>
-                    </div>
-                  </div>
-
-                  {/* Players */}
-                  <div className="mb-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-gray-400 text-sm">Players Joined</span>
-                      <span className="text-white font-medium text-sm">
-                        {current} / {game.playersNeeded}
+                  <div className="h-2 bg-gradient-to-r from-red-700 via-orange-600 to-red-700"></div>
+                  
+                  <div className="p-5">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-center gap-1.5 bg-red-950/30 px-2.5 py-1 rounded-lg border border-red-700/30">
+                        <Trophy size={14} className="text-red-400" />
+                        <span className="text-red-400 font-medium text-xs">{game.sport}</span>
+                      </div>
+                      <span
+                        className={`px-2.5 py-1 rounded-lg text-xs font-semibold ${isOpen
+                          ? "bg-green-500/20 text-green-400 border border-green-500/40"
+                          : "bg-gray-500/20 text-gray-400 border border-gray-500/40"
+                          }`}
+                      >
+                        {isOpen ? "OPEN" : "FULL"}
                       </span>
                     </div>
 
-                    <div className="w-full bg-neutral-800 rounded-full h-2 overflow-hidden">
-                      <div
-                        className="bg-gradient-to-r from-red-700 to-orange-600 h-full rounded-full transition-all duration-300"
-                        style={{ width: `${(current / game.playersNeeded) * 100}%` }}
-                      ></div>
+                    <h3 className="text-lg font-bold text-white mb-1 line-clamp-1">{game.title}</h3>
+                    <p className="text-gray-400 text-xs mb-4 flex items-center gap-1.5">
+                      <Users size={12} className="text-gray-500" />
+                      {game.creator?.name}
+                    </p>
+
+                    <div className="space-y-2 mb-4 bg-black/30 rounded-lg p-3 border border-red-900/20">
+                      <div className="flex items-center gap-2 text-gray-300 text-xs">
+                        <Calendar size={14} className="text-red-400" />
+                        <span>{formatDate(game.date)} at {formatTime(game.date)}</span>
+                      </div>
+
+                      <div className="flex items-center gap-2 text-gray-300 text-xs">
+                        <MapPin size={14} className="text-red-400" />
+                        <span>{game.location?.city}</span>
+                      </div>
+
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2 text-gray-300 text-xs">
+                          <Clock size={14} className="text-red-400" />
+                          <span>{game.duration} min</span>
+                        </div>
+
+                        <div className="flex items-center gap-2 text-gray-300 text-xs">
+                          <Target size={14} className="text-red-400" />
+                          <span className="capitalize">{game.skillLevel}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mb-4 bg-neutral-950/50 rounded-lg p-3 border border-red-900/20">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-gray-400 text-xs font-medium">Players</span>
+                        <span className="text-white font-bold text-sm bg-red-950/50 px-2 py-0.5 rounded border border-red-800/30">
+                          {current} / {game.playersNeeded}
+                        </span>
+                      </div>
+
+                      <div className="w-full bg-neutral-800 rounded-full h-2 overflow-hidden border border-neutral-700">
+                        <div
+                          className="bg-gradient-to-r from-red-600 via-orange-500 to-red-600 h-full rounded-full transition-all duration-500"
+                          style={{ width: `${(current / game.playersNeeded) * 100}%` }}
+                        ></div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <button
+                        onClick={() => joinGame(game._id)}
+                        disabled={!isOpen}
+                        className={`w-full py-2.5 rounded-lg font-semibold text-sm transition-all duration-300 ${isOpen
+                          ? "bg-gradient-to-r from-red-700 via-red-600 to-orange-600 text-white hover:from-red-600 hover:via-red-500 hover:to-orange-500 active:scale-95"
+                          : "bg-neutral-800 text-gray-500 cursor-not-allowed border border-neutral-700"
+                          }`}
+                      >
+                        {isOpen ? "Join Game" : "Game Full"}
+                      </button>
+
+                      <button
+                        onClick={() => navigate(`/GameDetail/${game._id}`)}
+                        className="w-full py-2.5 rounded-lg font-medium text-sm transition-all duration-300 bg-neutral-800 text-gray-300 hover:bg-neutral-700 border border-neutral-700 hover:border-red-700/50"
+                      >
+                        View Details
+                      </button>
                     </div>
                   </div>
 
-                  {/* Join button */}
-                  <button
-                    onClick={() => joinGame(game._id)}
-                    disabled={!isOpen}
-                    className={`w-full py-3 rounded-xl font-medium transition-all duration-300 ${
-                      isOpen
-                        ? "bg-gradient-to-r from-red-700 via-red-600 to-orange-600 text-white hover:opacity-90 active:scale-[0.98]"
-                        : "bg-neutral-800 text-gray-500 cursor-not-allowed"
-                    }`}
-                  >
-                    {isOpen ? "Join Game" : "Game Full"}
-                  </button>
                 </div>
               );
             })}
           </div>
         )}
 
-        {/* Empty */}
         {!loading && !error && filteredGames.length === 0 && (
           <div className="text-center py-20">
             <Trophy size={64} className="mx-auto text-gray-600 mb-4" />
