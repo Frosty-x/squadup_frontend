@@ -65,6 +65,15 @@ const gameService = {
             const message = error.response?.data?.message || error.message || 'Failed to create game';
             throw new Error(message);
         }
+    },
+    getGameById: async (gameId) => {
+        try {
+            const response = await api.get(`/game/${gameId}`);
+            return response.data;
+        } catch (error) {
+            const message = error.response?.data?.message || error.message || 'Failed to create game';
+            throw new Error(message);
+        }
     }
 
 }
