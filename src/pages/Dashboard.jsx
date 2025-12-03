@@ -91,31 +91,9 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen pt-15 bg-black text-white">
       {/* Header */}
-      <header className="border-b border-neutral-800 bg-neutral-900/50 backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto flex items-center justify-between py-4 px-6">
-          {/* Logo */}
-          <button
-            onClick={() => navigate('/')}
-            className="flex items-center space-x-3 hover:opacity-80 transition-opacity"
-          >
-            <div className="w-5 h-5 border-2 border-red-700 rotate-45"></div>
-            <span className="text-2xl badscript tracking-wider text-white">
-              SquadUp
-            </span>
-          </button>
-
-          {/* Logout Button */}
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-2 bg-neutral-800 hover:bg-red-700 text-white text-sm font-bold px-6 py-2.5 rounded-full transition-all duration-300 hover:scale-105"
-          >
-            <LogOut size={18} />
-            Logout
-          </button>
-        </div>
-      </header>
+     
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-6 py-12">
@@ -307,6 +285,29 @@ export default function Dashboard() {
 
         </div>
       </main>
+       <header className="border-b border-neutral-800 bg-neutral-900/50 backdrop-blur-xl">
+        <div className="max-w-7xl mx-auto flex items-center justify-between py-4 px-6">
+          {/* Logo */}
+          <button
+            onClick={() => navigate('/')}
+            className="flex items-center space-x-3 hover:opacity-80 transition-opacity"
+          >
+            <div className="w-5 h-5 border-2 border-red-700 rotate-45"></div>
+            <span className="text-2xl badscript tracking-wider text-white">
+              SquadUp
+            </span>
+          </button>
+
+          {/* Logout Button */}
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-2 bg-neutral-800 hover:bg-red-700 text-white text-sm font-bold px-6 py-2.5 rounded-full transition-all duration-300 hover:scale-105"
+          >
+            <LogOut size={18} />
+            Logout
+          </button>
+        </div>
+      </header>
     </div>
   );
 }
