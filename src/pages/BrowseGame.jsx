@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Search, MapPin, Calendar, Clock, Target, Trophy, ChevronDown, Users } from "lucide-react";
 import gameService from "../services/gameService";
 import { toast } from "react-toastify";
 
 export default function BrowseGames() {
+
   const navigate = useNavigate();
+  const  { user } = useContext(AuthContext);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSport, setSelectedSport] = useState("All Sports");
   const [selectedSkillLevel, setSelectedSkillLevel] = useState("All Levels");
@@ -22,11 +26,34 @@ export default function BrowseGames() {
   const joinGame = async (gameId) => {
     try {
       const response = await gameService.joinGame(gameId);
-      setError(response.message);
+      toast.success(response.message || "Joined game successfully!");
       await fetchGames();
     } catch (error) {
       toast.error(error.message);
       await fetchGames();
+    }
+  };
+
+  const leaveGame = async (gameId) => {
+    try {
+      const response = await gameService.leaveGame(gameId);
+      toast.success(response.message || "Left game successfully");
+      await fetchGames();
+    } catch (error) {
+      toast.error(error.message || "Failed to leave game");
+      await fetchGames();
+    }
+  };
+
+  const cancelGame = async (gameId) => {
+    if (window.confirm("Are you sure you want to cancel this game? This action cannot be undone.")) {
+      try {
+        const response = await gameService.cancelGame(gameId);
+        toast.success(response.message || "Game cancelled successfully");
+        await fetchGames();
+      } catch (error) {
+        toast.error(error.message || "Failed to cancel game");
+      }
     }
   };
 
@@ -59,7 +86,48 @@ export default function BrowseGames() {
     return date.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
   };
 
+  // Check if user has joined the game
+  const isUserJoined = (game) => {
+    if(!user || !game.currentPlayers) {
+      return false;
+    }
+
+    // Convert to array if not already
+    const players = Array.isArray(game.currentPlayers) ? game.currentPlayers : [];
+    
+    return players.some(player => {
+      // Handle both object and string IDs
+      const playerId = typeof player === 'object' && player !== null ? player._id : player;
+      const userId = user._id;
+      
+      // Convert both to strings for comparison to avoid type issues
+      return String(playerId).trim() === String(userId).trim();
+    });
+  };
+
+  // Check if user is the creator of the game
+  const isUserCreator = (game) => {
+    if (!user || !game.creator) {
+      return false;
+    }
+    
+    // Handle both object and string IDs
+    const creatorId = typeof game.creator === 'object' && game.creator !== null ? game.creator._id : game.creator;
+    const userId = user._id;
+    
+    // Convert both to strings for comparison
+    return String(creatorId).trim() === String(userId).trim();
+  };
+
   const filteredGames = games.filter((game) => {
+    // Check if game has expired
+    const gameDate = new Date(game.date);
+    const now = new Date();
+    const isExpired = gameDate < now;
+
+    // Don't show expired games in browse page
+    if (isExpired) return false;
+
     const matchesSearch =
       game.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       game.sport?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -219,8 +287,21 @@ export default function BrowseGames() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredGames.map((game) => {
               const status = game.status?.toLowerCase();
-              const isOpen = status === "open";
               const current = game.currentPlayers?.length || 0;
+              const needed = game.playersNeeded || 0;
+              
+              // Check if game has expired (date has passed)
+              const gameDate = new Date(game.date);
+              const now = new Date();
+              const isExpired = gameDate < now;
+              
+              // Check if game is actually full based on player count
+              const isFull = current >= needed;
+              const isOpen = !isFull && !isExpired && status !== "cancelled" && status !== "completed";
+              
+              // Calculate button states
+              const userIsCreator = isUserCreator(game);
+              const userHasJoined = isUserJoined(game);
 
               return (
                 <div
@@ -236,19 +317,24 @@ export default function BrowseGames() {
                         <span className="text-red-400 font-medium text-xs">{game.sport}</span>
                       </div>
                       <span
-                        className={`px-2.5 py-1 rounded-lg text-xs font-semibold ${isOpen
-                          ? "bg-green-500/20 text-green-400 border border-green-500/40"
-                          : "bg-gray-500/20 text-gray-400 border border-gray-500/40"
-                          }`}
+                        className={`px-2.5 py-1 rounded-lg text-xs font-semibold ${
+                          isExpired
+                            ? "bg-gray-500/20 text-gray-400 border border-gray-500/40"
+                            : isOpen
+                            ? "bg-green-500/20 text-green-400 border border-green-500/40"
+                            : isFull
+                            ? "bg-orange-500/20 text-orange-400 border border-orange-500/40"
+                            : "bg-gray-500/20 text-gray-400 border border-gray-500/40"
+                        }`}
                       >
-                        {isOpen ? "OPEN" : "FULL"}
+                        {isExpired ? "EXPIRED" : isOpen ? "OPEN" : isFull ? "FULL" : "CLOSED"}
                       </span>
                     </div>
 
                     <h3 className="text-lg font-bold text-white mb-1 line-clamp-1">{game.title}</h3>
                     <p className="text-gray-400 text-xs mb-4 flex items-center gap-1.5">
                       <Users size={12} className="text-gray-500" />
-                      {game.creator?.name}
+                      {game.creator?.name || "Unknown"}
                     </p>
 
                     <div className="space-y-2 mb-4 bg-black/30 rounded-lg p-3 border border-red-900/20">
@@ -292,16 +378,42 @@ export default function BrowseGames() {
                     </div>
 
                     <div className="space-y-2">
-                      <button
-                        onClick={() => joinGame(game._id)}
-                        disabled={!isOpen}
-                        className={`w-full py-2.5 rounded-lg font-semibold text-sm transition-all duration-300 ${isOpen
-                          ? "bg-gradient-to-r from-red-700 via-red-600 to-orange-600 text-white hover:from-red-600 hover:via-red-500 hover:to-orange-500 active:scale-95"
-                          : "bg-neutral-800 text-gray-500 cursor-not-allowed border border-neutral-700"
+                      {isExpired ? (
+                        <button
+                          disabled
+                          className="w-full py-2.5 rounded-lg font-semibold text-sm transition-all duration-300 bg-neutral-800 text-gray-500 cursor-not-allowed border border-neutral-700"
+                        >
+                          Game Expired
+                        </button>
+                      ) : userIsCreator ? (
+                        <button
+                          onClick={() => cancelGame(game._id)}
+                          className="w-full py-2.5 rounded-lg font-semibold text-sm transition-all duration-300 bg-gradient-to-r from-red-700 via-red-600 to-red-500 text-white hover:from-red-800 hover:via-red-700 hover:to-red-600 active:scale-95"
+                        >
+                          Cancel Game
+                        </button>
+                      ) : userHasJoined ? (
+                        <button
+                          onClick={() => leaveGame(game._id)}
+                          className="w-full py-2.5 rounded-lg font-semibold text-sm transition-all duration-300 bg-gradient-to-r from-orange-600 via-yellow-600 to-orange-600 text-white hover:from-orange-700 hover:via-yellow-700 hover:to-orange-700 active:scale-95"
+                        >
+                          Leave Game
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => joinGame(game._id)}
+                          disabled={!isOpen}
+                          className={`w-full py-2.5 rounded-lg font-semibold text-sm transition-all duration-300 ${
+                            isOpen
+                              ? "bg-gradient-to-r from-red-700 via-red-600 to-orange-600 text-white hover:from-red-600 hover:via-red-500 hover:to-orange-500 active:scale-95"
+                              : isFull
+                              ? "bg-neutral-800 text-gray-500 cursor-not-allowed border border-neutral-700"
+                              : "bg-neutral-800 text-gray-500 cursor-not-allowed border border-neutral-700"
                           }`}
-                      >
-                        {isOpen ? "Join Game" : "Game Full"}
-                      </button>
+                        >
+                          {isOpen ? "Join Game" : isFull ? "Game Full" : "Not Available"}
+                        </button>
+                      )}
 
                       <button
                         onClick={() => navigate(`/GameDetail/${game._id}`)}
