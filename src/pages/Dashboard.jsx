@@ -292,19 +292,6 @@ export default function Dashboard() {
             onClick={() => navigate('/')}
             className="flex items-center space-x-3 hover:opacity-80 transition-opacity"
           >
-            <div className="w-5 h-5 border-2 border-red-700 rotate-45"></div>
-            <span className="text-2xl badscript tracking-wider text-white">
-              SquadUp
-            </span>
-          </button>
-
-          {/* Logout Button */}
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-2 bg-neutral-800 hover:bg-red-700 text-white text-sm font-bold px-6 py-2.5 rounded-full transition-all duration-300 hover:scale-105"
-          >
-            <LogOut size={18} />
-            Logout
           </button>
         </div>
       </header>

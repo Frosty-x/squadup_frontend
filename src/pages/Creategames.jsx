@@ -171,14 +171,14 @@ export default function CreateGames() {
     <div className="min-h-screen bg-black text-white px-6 py-16 relative overflow-hidden">
       {/* Subtle Background Glow */}
       <div className="absolute inset-0">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-red-500/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-24 right-16 w-96 h-96 bg-red-800/10 rounded-full blur-3xl"></div>
+        <div className="absolute top-20 left-10  w-72 h-72 bg-red-500/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-24  right-16 w-96 h-96 bg-red-800/10 rounded-full blur-3xl"></div>
       </div>
 
       <div className="max-w-6xl mx-auto space-y-12 relative z-10">
         {/* Header */}
         <div className="text-center space-y-2">
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-red-500 via-orange-500 to-yellow-400 bg-clip-text text-transparent">
+          <h1 className="text-4xl pt-15 md:text-5xl font-bold bg-gradient-to-r from-red-500 via-orange-500 to-yellow-400 bg-clip-text text-transparent">
             Create Your Game Session
           </h1>
           <p className="text-gray-400 text-base md:text-lg font-light">
