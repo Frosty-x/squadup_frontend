@@ -6,6 +6,7 @@ import App from './App.jsx'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Navbar from './components/ui/Navbar.jsx'
+import Footer from './components/ui/Footer.jsx'
 
 
 createRoot(document.getElementById('root')).render(
@@ -13,8 +14,7 @@ createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       <Navbar />
       <App />
-      <ToastContainer position="top-right"
-      />
+      <ToastContainer position="top-right"/>
     </BrowserRouter>
   </AuthProvider>
 )
