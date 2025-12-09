@@ -212,7 +212,9 @@ const GameDetail = () => {
                 <>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                     {displayedPlayers.map((player, index) => {
-                      const isOrganizer = player._id === event.creator?._id || player.id === event.creator?.id;
+                      const playerId = player._id || player.id;
+                      const creatorId = event.creator?._id || event.creator?.id;
+                      const isOrganizer = playerId && creatorId && playerId === creatorId;
                       return (
                         <div key={player._id || player.id || index} className="flex items-center gap-4 p-4 bg-black rounded-lg border border-zinc-800 hover:border-zinc-700 transition-colors">
                           {player.profilePic ? (
